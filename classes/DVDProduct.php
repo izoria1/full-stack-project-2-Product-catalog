@@ -36,6 +36,32 @@ class DVDProduct extends Product {
         echo "Price: $" . $this->getPrice() . "\n";
         echo "Size: " . $this->getSize() . " MB\n";
     }
+
+    public function saveSpecificAttributes($db) {
+        $query = "INSERT INTO dvd_products (sku, size) VALUES (:sku, :size)";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->bindValue(':size', $this->getSize());
+        $stmt->execute();
+    }
+
+    // New method to update specific attributes
+    public function updateSpecificAttributes($db) {
+        $query = "UPDATE dvd_products SET size = :size WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->bindValue(':size', $this->getSize());
+        $stmt->execute();
+    }
+
+    // New method to delete specific attributes
+    public function deleteSpecificAttributes($db) {
+        $query = "DELETE FROM dvd_products WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->execute();
+    }
+
 }
 
 

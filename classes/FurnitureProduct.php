@@ -51,5 +51,36 @@ class FurnitureProduct extends Product {
         echo "Price: $" . $this->getPrice() . "\n";
         echo "Dimensions: " . $this->getHeight() . "x" . $this->getWidth() . "x" . $this->getLength() . "\n";
     }  
+
+
+    // New method to save specific attributes
+    public function saveSpecificAttributes($db) {
+        $query = "INSERT INTO furniture_products (sku, height, width, length) VALUES (:sku, :height, :width, :length)";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->bindValue(':height', $this->getHeight());
+        $stmt->bindValue(':width', $this->getWidth());
+        $stmt->bindValue(':length', $this->getLength());
+        $stmt->execute();
+    }
+
+    // New method to update specific attributes
+    public function updateSpecificAttributes($db) {
+        $query = "UPDATE furniture_products SET height = :height, width = :width, length = :length WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->bindValue(':height', $this->getHeight());
+        $stmt->bindValue(':width', $this->getWidth());
+        $stmt->bindValue(':length', $this->getLength());
+        $stmt->execute();
+    }
+
+    // New method to delete specific attributes
+    public function deleteSpecificAttributes($db) {
+        $query = "DELETE FROM furniture_products WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->execute();
+    }
 }
 
