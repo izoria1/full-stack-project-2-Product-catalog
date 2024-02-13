@@ -3,17 +3,12 @@
 require_once 'Database.php'; // Path to your Database class
 require_once 'DVDProduct.php'; // Path to your DVDProduct class
 
-// Attempt to create a new DVDProduct and save it
-$sku = "DVD00101"; // Make sure this SKU is unique for each test
-$name = "Testing DVD";
-$price = 19.2;
-$size = 20; // Size in MB
 
-$dvdProduct = new DVDProduct($sku, $name, $price, $size);
+// Specify the SKU of the product you want to delete
+$skuToDelete = "DVD0010";
 
 try {
-    $dvdProduct->save();
-    echo "Product saved successfully!";
+    DVDProduct::delete($skuToDelete);
 } catch (Exception $e) {
-    echo "Error saving product: " . $e->getMessage();
+    echo "Error deleting product: " . $e->getMessage();
 }
