@@ -6,7 +6,7 @@
     <title>Add Product</title>
 </head>
 <body>
-    <h1>Add New Product</h1>
+    <h1>Add New Product!</h1>
     <p>Product form will go here.</p>
 </body>
 </html>

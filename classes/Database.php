@@ -6,7 +6,7 @@ class Database {
     private function __construct() {
         // Initialize your database connection here
         // Using PDO as an example
-        $this->connection = new PDO("mysql:host=localhost;dbname=product_db", "your_username", "your_password");
+        $this->connection = new PDO("mysql:host=localhost;dbname=product_db", "root", "");
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 

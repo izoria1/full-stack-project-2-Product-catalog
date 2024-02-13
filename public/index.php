@@ -6,7 +6,7 @@
     <title>Product List</title>
 </head>
 <body>
-    <h1>Product List</h1>
+    <h1>Product List!</h1>
     <?php echo "PHP is working"; ?>
 </body>
 </html>
