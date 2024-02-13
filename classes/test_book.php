@@ -1,9 +1,6 @@
 <?php
-require_once 'Database.php'; // Make sure this path is correct.
-require_once 'BookProduct.php';
 
-// Example test case
-$bookProduct = new BookProduct("s1", "Testing Book", 19.99, 5);
+require_once 'Database.php'; // Adjust the path as necessary
+require_once 'BookProduct.php'; // Adjust the path as necessary
 
-// Attempt to save the product
-$bookProduct->save();
+BookProduct::fetchAll();
