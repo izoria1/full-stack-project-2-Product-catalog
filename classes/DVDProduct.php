@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Product.php'; // Ensure this path is correct
+require_once 'Database.php'; // Ensure this path is correct
 
 class DVDProduct extends Product {
     // DVD-specific attribute
@@ -18,18 +19,64 @@ class DVDProduct extends Product {
     }
 
     // Setter for size
+    // Setter for price with validation
+    public function setPrice($price) {
+        if ($price < 0) {
+            throw new Exception("Price cannot be negative.");
+        }
+        $this->price = $price;
+    }
+
+    // Setter for size with validation
     public function setSize($size) {
+        if ($size < 0) {
+            throw new Exception("Size cannot be negative.");
+        }
         $this->size = $size;
     }
 
-    // Overridden save method to include size
+    // Overridden save method to include size and database logic
     public function save() {
-        // Simulate saving to the database. Actual implementation would involve database logic.
-        echo "Saving DVD Product: " . $this->getSku() . ", Size: " . $this->getSize() . " MB\n";
+        $db = Database::getInstance()->getConnection();
+
+        if ($this->getPrice() < 0 || $this->getSize() < 0) {
+            throw new Exception("Price and size must be non-negative.");
+        }
+
+        // Check SKU uniqueness
+        $stmt = $db->prepare("SELECT COUNT(*) FROM products WHERE sku = :sku");
+        $stmt->execute([':sku' => $this->getSku()]);
+        if ($stmt->fetchColumn() > 0) {
+            throw new Exception("SKU {$this->getSku()} already exists.");
+        }
+
+        // Transaction begins
+        $db->beginTransaction();
+        try {
+            // Insert base product data
+            $stmt = $db->prepare("INSERT INTO products (sku, name, price) VALUES (:sku, :name, :price)");
+            $stmt->execute([
+                ':sku' => $this->getSku(),
+                ':name' => $this->getName(),
+                ':price' => $this->getPrice()
+            ]);
+
+            // Insert DVD-specific attributes
+            $this->saveSpecificAttributes($db);
+
+            // Commit transaction
+            $db->commit();
+            echo "Saved DVD Product successfully.\n";
+        } catch (Exception $e) {
+            // Rollback transaction if something goes wrong
+            $db->rollBack();
+            throw $e; // Re-throw the exception for further handling
+        }
     }
 
-    // Overridden display method to include size
+    // Implement the abstract display method
     public function display() {
+        // Display logic for DVDProduct
         echo "Displaying DVD Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
         echo "Name: " . $this->getName() . "\n";
