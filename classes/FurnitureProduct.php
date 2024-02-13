@@ -13,7 +13,6 @@ class FurnitureProduct extends Product {
         $this->setHeight($height);
         $this->setWidth($width);
         $this->setLength($length);
-        $this->setPrice($price); // Ensure price is set through the setter to apply validation
     }
 
     public function getHeight() {
@@ -21,8 +20,8 @@ class FurnitureProduct extends Product {
     }
     
     public function setHeight($height) {
-        if ($height < 0) {
-            throw new Exception("Height cannot be negative.");
+        if (!is_numeric($height) || $height <= 0) {
+            throw new InvalidArgumentException("Height must be a positive number.");
         }
         $this->height = $height;
     }
@@ -32,8 +31,8 @@ class FurnitureProduct extends Product {
     }
     
     public function setWidth($width) {
-        if ($width < 0) {
-            throw new Exception("Width cannot be negative.");
+        if (!is_numeric($width) || $width <= 0) {
+            throw new InvalidArgumentException("Width must be a positive number.");
         }
         $this->width = $width;
     }
@@ -43,16 +42,15 @@ class FurnitureProduct extends Product {
     }
     
     public function setLength($length) {
-        if ($length < 0) {
-            throw new Exception("Length cannot be negative.");
+        if (!is_numeric($length) || $length <= 0) {
+            throw new InvalidArgumentException("Length must be a positive number.");
         }
         $this->length = $length;
     }
 
-    // Override the setPrice method to include validation for negative price
     public function setPrice($price) {
-        if ($price < 0) {
-            throw new Exception("Price cannot be negative.");
+        if (!is_numeric($price) || $price < 0) {
+            throw new InvalidArgumentException("Price cannot be negative.");
         }
         $this->price = $price;
     }
@@ -116,35 +114,32 @@ class FurnitureProduct extends Product {
     public function save() {
         $db = Database::getInstance()->getConnection();
 
-        // SKU uniqueness check
-        $skuCheckQuery = "SELECT COUNT(*) FROM products WHERE sku = :sku";
-        $stmt = $db->prepare($skuCheckQuery);
-        $stmt->bindValue(':sku', $this->getSku());
-        $stmt->execute();
-
-        if ($stmt->fetchColumn() > 0) {
-            throw new Exception("SKU already exists.");
-        }
-
-        $db->beginTransaction();
-
         try {
-            // Insert into products table with type
-            $productInsertQuery = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'furniture')";
-            $stmt = $db->prepare($productInsertQuery);
+            $db->beginTransaction();
+
+            if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || 
+                !is_numeric($this->getHeight()) || !is_numeric($this->getWidth()) || !is_numeric($this->getLength())) {
+                throw new Exception("Please ensure all fields are filled correctly with valid numeric values.");
+            }
+
+            if (!$this->isSkuUnique($db, $this->getSku())) {
+                throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
+            }
+
+            $query = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'furniture')";
+            $stmt = $db->prepare($query);
             $stmt->bindValue(':sku', $this->getSku());
             $stmt->bindValue(':name', $this->getName());
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->execute();
 
-            // Insert specific attributes for furniture
             $this->saveSpecificAttributes($db);
 
             $db->commit();
             echo "Furniture Product saved successfully.\n";
         } catch (Exception $e) {
             $db->rollBack();
-            throw $e;
+            echo "Error saving product: " . $e->getMessage() . "\n";
         }
     }
     
@@ -154,6 +149,14 @@ class FurnitureProduct extends Product {
         echo "Name: " . $this->getName() . "\n";
         echo "Price: $" . $this->getPrice() . "\n";
         echo "Dimensions: " . $this->getHeight() . "x" . $this->getWidth() . "x" . $this->getLength() . "\n";
+    }
+
+    private function isSkuUnique($db, $sku) {
+        $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $sku);
+        $stmt->execute();
+        return $stmt->fetchColumn() == 0;
     }
 
     public function update() {

@@ -10,7 +10,7 @@ class BookProduct extends Product {
     // Constructor
     public function __construct($sku, $name, $price, $weight) {
         parent::__construct($sku, $name, $price);
-        $this->weight = $weight;
+        $this->setWeight($weight); // Ensure validation is applied through the setter
     }
     
     // Getter and Setter for Weight
@@ -19,15 +19,15 @@ class BookProduct extends Product {
     }
     
     public function setWeight($weight) {
-        if ($weight <= 0) {
-            throw new InvalidArgumentException("Weight must be positive.");
+        if (!is_numeric($weight) || $weight <= 0) {
+            throw new InvalidArgumentException("Weight must be a positive number.");
         }
         $this->weight = $weight;
     }
 
     // Override the setPrice method from Product to add validation
     public function setPrice($price) {
-        if ($price < 0) {
+        if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
         }
         $this->price = $price;
@@ -83,21 +83,18 @@ class BookProduct extends Product {
     public function save() {
         $db = Database::getInstance()->getConnection();
     
-        // Start transaction
-        $db->beginTransaction();
-    
         try {
-            // Validate price and weight before proceeding
-            if ($this->getPrice() < 0 || $this->getWeight() <= 0) {
-                throw new Exception("Error: Invalid price or weight.");
+            $db->beginTransaction();
+    
+            // Check for missing or invalid data explicitly
+            if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || !is_numeric($this->getWeight())) {
+                throw new Exception("Please ensure all fields are filled correctly. SKU, Name, Price, and Weight are required.");
             }
     
-            // Check for SKU uniqueness
             if (!$this->isSkuUnique($db, $this->getSku())) {
-                throw new Exception("Error: SKU " . $this->getSku() . " already exists.");
+                throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
             }
     
-            // Insert into products table
             $query = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'book')";
             $stmt = $db->prepare($query);
             $stmt->bindValue(':sku', $this->getSku());
@@ -105,16 +102,13 @@ class BookProduct extends Product {
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->execute();
     
-            // Insert specific attributes
             $this->saveSpecificAttributes($db);
     
-            // Commit transaction
             $db->commit();
             echo "Book Product saved successfully.\n";
         } catch (Exception $e) {
-            // Rollback transaction if any step fails
             $db->rollBack();
-            echo $e->getMessage() . "\n";
+            echo "Error saving product: " . $e->getMessage() . "\n";
         }
     }    
 

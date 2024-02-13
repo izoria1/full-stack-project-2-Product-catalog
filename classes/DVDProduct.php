@@ -8,7 +8,7 @@ class DVDProduct extends Product {
 
     public function __construct($sku, $name, $price, $size) {
         parent::__construct($sku, $name, $price);
-        $this->size = $size;
+        $this->setSize($size); // Apply validation through the setter
     }
 
     public function getSize() {
@@ -16,15 +16,15 @@ class DVDProduct extends Product {
     }
 
     public function setSize($size) {
-        if ($size < 0) {
-            throw new Exception("Size cannot be negative.");
+        if (!is_numeric($size) || $size <= 0) {
+            throw new InvalidArgumentException("Size must be a positive number.");
         }
         $this->size = $size;
     }
 
     public function setPrice($price) {
-        if ($price < 0) {
-            throw new Exception("Price cannot be negative.");
+        if (!is_numeric($price) || $price < 0) {
+            throw new InvalidArgumentException("Price cannot be negative.");
         }
         $this->price = $price;
     }
@@ -85,40 +85,32 @@ class DVDProduct extends Product {
     // Overridden save method to include size and database logic
     public function save() {
         $db = Database::getInstance()->getConnection();
-
-        if ($this->getPrice() < 0 || $this->getSize() < 0) {
-            throw new Exception("Price and size must be non-negative.");
-        }
-
-        // Check SKU uniqueness
-        $stmt = $db->prepare("SELECT COUNT(*) FROM products WHERE sku = :sku");
-        $stmt->execute([':sku' => $this->getSku()]);
-        if ($stmt->fetchColumn() > 0) {
-            throw new Exception("SKU {$this->getSku()} already exists.");
-        }
-
-        // Transaction begins
-        $db->beginTransaction();
-
+    
         try {
-            // Insert base product data
-            $stmt = $db->prepare("INSERT INTO products (sku, name, price) VALUES (:sku, :name, :price)");
-            $stmt->execute([
-                ':sku' => $this->getSku(),
-                ':name' => $this->getName(),
-                ':price' => $this->getPrice()
-            ]);
-
-            // Insert DVD-specific attributes
+            $db->beginTransaction();
+    
+            if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || !is_numeric($this->getSize())) {
+                throw new Exception("Please ensure all fields are filled correctly. SKU, Name, Price, and Size are required.");
+            }
+    
+            if (!$this->isSkuUnique($db, $this->getSku())) {
+                throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
+            }
+    
+            $query = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'dvd')";
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':sku', $this->getSku());
+            $stmt->bindValue(':name', $this->getName());
+            $stmt->bindValue(':price', $this->getPrice());
+            $stmt->execute();
+    
             $this->saveSpecificAttributes($db);
-
-            // Commit transaction
+    
             $db->commit();
-            echo "Saved DVD Product successfully.\n";
+            echo "DVD Product saved successfully.\n";
         } catch (Exception $e) {
-            // Rollback transaction if something goes wrong
             $db->rollBack();
-            throw $e; // Re-throw the exception for further handling
+            echo "Error saving product: " . $e->getMessage() . "\n";
         }
     }
 
@@ -130,6 +122,14 @@ class DVDProduct extends Product {
         echo "Name: " . $this->getName() . "\n";
         echo "Price: $" . $this->getPrice() . "\n";
         echo "Size: " . $this->getSize() . " MB\n";
+    }
+
+    private function isSkuUnique($db, $sku) {
+        $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $sku);
+        $stmt->execute();
+        return $stmt->fetchColumn() == 0;
     }
 
     public function saveSpecificAttributes($db) {
