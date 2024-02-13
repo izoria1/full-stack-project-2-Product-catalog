@@ -57,6 +57,62 @@ class FurnitureProduct extends Product {
         $this->price = $price;
     }
     
+    // New static method for fetching all furniture products
+    public static function fetchAll() {
+        $db = Database::getInstance()->getConnection();
+
+        // SQL query to join base product table with the furniture-specific attributes table
+        $query = "SELECT p.sku, p.name, p.price, f.height, f.width, f.length FROM products p INNER JOIN furniture_products f ON p.sku = f.sku WHERE p.type = 'furniture'";
+
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+
+        // Fetch all matching records
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($products) {
+            echo "Furniture Products Retrieved Successfully:\n";
+            foreach ($products as $product) {
+                echo "SKU: " . $product['sku'] . ", ";
+                echo "Name: " . $product['name'] . ", ";
+                echo "Price: $" . $product['price'] . ", ";
+                echo "Dimensions: " . $product['height'] . "x" . $product['width'] . "x" . $product['length'] . "\n";
+            }
+        } else {
+            echo "No furniture products found.\n";
+        }
+    }
+
+    // Method to delete a furniture product by its SKU
+    public static function delete($sku) {
+        $db = Database::getInstance()->getConnection();
+
+        // Begin transaction to ensure data integrity
+        $db->beginTransaction();
+
+        try {
+            // First, delete the specific attributes in the furniture_products table
+            $deleteSpecificQuery = "DELETE FROM furniture_products WHERE sku = :sku";
+            $stmt = $db->prepare($deleteSpecificQuery);
+            $stmt->bindValue(':sku', $sku);
+            $stmt->execute();
+
+            // Then, delete the base product record in the products table
+            $deleteProductQuery = "DELETE FROM products WHERE sku = :sku";
+            $stmt = $db->prepare($deleteProductQuery);
+            $stmt->bindValue(':sku', $sku);
+            $stmt->execute();
+
+            // Commit the transaction
+            $db->commit();
+            echo "Furniture Product with SKU $sku deleted successfully.\n";
+        } catch (Exception $e) {
+            // Rollback the transaction in case of error
+            $db->rollBack();
+            throw new Exception("Failed to delete Furniture Product with SKU $sku: " . $e->getMessage());
+        }
+    }
+
     public function save() {
         $db = Database::getInstance()->getConnection();
 
