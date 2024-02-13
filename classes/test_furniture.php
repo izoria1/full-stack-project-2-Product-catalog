@@ -1,32 +1,43 @@
 <?php
 
 require_once 'FurnitureProduct.php';
-require_once 'Database.php'; // Ensure this path is correct
+require_once 'Database.php';
 
-// Assuming Database.php and other necessary files are correctly included and set up
+// Assuming you have a product with SKU 'FURN1234' in your database
+$skuToUpdate = 'FUR777';
+$newName = 'Updated Furniture Name';
+$newPrice = 150.00; // Make sure this is a valid value (e.g., non-negative)
+$newHeight = 20;
+$newWidth = 20;
+$newLength = 25;
 
-// Example for a successful creation and save
 try {
-    $furnitureProduct = new FurnitureProduct("FUR99", "Stylish Chair", 150.00, 122, 76, 45);
-    $furnitureProduct->save();
-    echo "Product saved successfully: " . $furnitureProduct->display() . "\n";
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage() . "\n";
-}
+    $db = Database::getInstance()->getConnection();
+    
+    // Instantiate your FurnitureProduct with new values
+    $furnitureProduct = new FurnitureProduct($skuToUpdate, $newName, $newPrice, $newHeight, $newWidth, $newLength);
+    
+    // Call the update method
+    $furnitureProduct->update();
 
-// Example for handling invalid data (negative dimensions)
-try {
-    $furnitureProductInvalid = new FurnitureProduct("FUR124", "Small Table", 85.00, 50, 60, -40);
-    $furnitureProductInvalid->save();
-} catch (Exception $e) {
-    echo "Validation failed: " . $e->getMessage() . "\n";
-}
+    echo "Update operation successful.\n";
 
-// Example for handling duplicate SKU
-try {
-    $furnitureProductDuplicateSKU = new FurnitureProduct("FUR99", "Another Chair", 120.00, 100, 70, 50);
-    $furnitureProductDuplicateSKU->save();
-} catch (Exception $e) {
-    echo "Duplicate SKU: " . $e->getMessage() . "\n";
-}
+    // Fetch the updated details to verify
+    $verifyQuery = "SELECT p.name, p.price, f.height, f.width, f.length FROM products p INNER JOIN furniture_products f ON p.sku = f.sku WHERE p.sku = :sku";
+    $stmt = $db->prepare($verifyQuery);
+    $stmt->bindValue(':sku', $skuToUpdate);
+    $stmt->execute();
 
+    $updatedProduct = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($updatedProduct) {
+        echo "Updated Product Details:\n";
+        echo "Name: " . $updatedProduct['name'] . "\n";
+        echo "Price: $" . $updatedProduct['price'] . "\n";
+        echo "Dimensions: " . $updatedProduct['height'] . "x" . $updatedProduct['width'] . "x" . $updatedProduct['length'] . "\n";
+    } else {
+        echo "Product update verification failed: Product details could not be retrieved.\n";
+    }
+} catch (Exception $e) {
+    echo "An error occurred: " . $e->getMessage() . "\n";
+}

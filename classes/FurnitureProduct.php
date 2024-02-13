@@ -13,6 +13,7 @@ class FurnitureProduct extends Product {
         $this->setHeight($height);
         $this->setWidth($width);
         $this->setLength($length);
+        $this->setPrice($price); // Ensure price is set through the setter to apply validation
     }
 
     public function getHeight() {
@@ -48,6 +49,7 @@ class FurnitureProduct extends Product {
         $this->length = $length;
     }
 
+    // Override the setPrice method to include validation for negative price
     public function setPrice($price) {
         if ($price < 0) {
             throw new Exception("Price cannot be negative.");
@@ -55,16 +57,10 @@ class FurnitureProduct extends Product {
         $this->price = $price;
     }
     
-    
     public function save() {
-        // Additional validation to ensure data integrity
-        if ($this->height < 0 || $this->width < 0 || $this->length < 0) {
-            throw new Exception("Dimensions cannot be negative.");
-        }
-
         $db = Database::getInstance()->getConnection();
 
-        // Check for SKU uniqueness
+        // SKU uniqueness check
         $skuCheckQuery = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($skuCheckQuery);
         $stmt->bindValue(':sku', $this->getSku());
@@ -77,15 +73,15 @@ class FurnitureProduct extends Product {
         $db->beginTransaction();
 
         try {
-            // Insert into products table
-            $productInsertQuery = "INSERT INTO products (sku, name, price) VALUES (:sku, :name, :price)";
+            // Insert into products table with type
+            $productInsertQuery = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'furniture')";
             $stmt = $db->prepare($productInsertQuery);
             $stmt->bindValue(':sku', $this->getSku());
             $stmt->bindValue(':name', $this->getName());
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->execute();
 
-            // Call to insert specific attributes
+            // Insert specific attributes for furniture
             $this->saveSpecificAttributes($db);
 
             $db->commit();
@@ -104,8 +100,43 @@ class FurnitureProduct extends Product {
         echo "Dimensions: " . $this->getHeight() . "x" . $this->getWidth() . "x" . $this->getLength() . "\n";
     }
 
+    public function update() {
+        $db = Database::getInstance()->getConnection();
+
+        // Check if the product exists
+        $existCheckQuery = "SELECT COUNT(*) FROM products WHERE sku = :sku";
+        $stmt = $db->prepare($existCheckQuery);
+        $stmt->bindValue(':sku', $this->getSku());
+        $stmt->execute();
+
+        if ($stmt->fetchColumn() == 0) {
+            throw new Exception("Product with SKU: {$this->getSku()} does not exist.");
+        }
+
+        $db->beginTransaction();
+
+        try {
+            // Update the base product details
+            $productUpdateQuery = "UPDATE products SET name = :name, price = :price WHERE sku = :sku";
+            $stmt = $db->prepare($productUpdateQuery);
+            $stmt->bindValue(':name', $this->getName());
+            $stmt->bindValue(':price', $this->getPrice());
+            $stmt->bindValue(':sku', $this->getSku());
+            $stmt->execute();
+
+            // Update the specific product attributes
+            $this->updateSpecificAttributes($db);
+
+            $db->commit();
+            echo "Furniture Product updated successfully.\n";
+        } catch (Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
+
     public function saveSpecificAttributes($db) {
-        // Ensure this is only called after validation checks in save()
+        // Insert into furniture_products table
         $query = "INSERT INTO furniture_products (sku, height, width, length) VALUES (:sku, :height, :width, :length)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
