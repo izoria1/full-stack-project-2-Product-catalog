@@ -10,7 +10,11 @@ class BookProduct extends Product {
     // Constructor
     public function __construct($sku, $name, $price, $weight) {
         parent::__construct($sku, $name, $price);
-        $this->setWeight($weight); // Ensure validation is applied through the setter
+        // Directly assign values without validation for internal use to avoid deletion issue
+        $this->sku = $sku;
+        $this->name = $name;
+        $this->price = $price;
+        $this->weight = $weight;
     }
     
     // Getter and Setter for Weight
@@ -25,7 +29,6 @@ class BookProduct extends Product {
         $this->weight = $weight;
     }
 
-    // Override the setPrice method from Product to add validation
     public function setPrice($price) {
         if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
@@ -56,27 +59,34 @@ class BookProduct extends Product {
     public function delete() {
         $db = Database::getInstance()->getConnection();
 
-        // Start transaction to ensure data integrity
-        $db->beginTransaction();
-
         try {
-            // First, delete the product's specific attributes from the book_products table
-            $this->deleteSpecificAttributes($db);
+            $db->beginTransaction();
 
-            // Then, delete the product from the products table
+            // Call deleteSpecificAttributes to remove book-specific data
+            $this->deleteSpecificAttributes($db, false); // Pass false to indicate skipping validation
+
+            // Then, delete the general product data
             $query = "DELETE FROM products WHERE sku = :sku";
             $stmt = $db->prepare($query);
-            $stmt->bindValue(':sku', $this->getSku());
+            $stmt->bindValue(':sku', $this->sku); // Use directly assigned property
             $stmt->execute();
 
-            // If everything is fine, commit the transaction
             $db->commit();
             echo "Product deleted successfully.\n";
         } catch (Exception $e) {
-            // If an error occurs, roll back the transaction and report the error
             $db->rollBack();
             echo "Error: Failed to delete product. " . $e->getMessage() . "\n";
         }
+    }
+
+    protected function deleteSpecificAttributes($db, $validate = true) {
+        if ($validate && (!is_numeric($this->weight) || $this->weight <= 0)) {
+            throw new InvalidArgumentException("Weight must be a positive number for deletion.");
+        }
+        $query = "DELETE FROM book_products WHERE sku = :sku";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':sku', $this->sku); // Use directly assigned property
+        $stmt->execute();
     }
     
     // Implement abstract methods
@@ -179,12 +189,7 @@ class BookProduct extends Product {
     }
 
     // New method to delete specific attributes
-    public function deleteSpecificAttributes($db) {
-        $query = "DELETE FROM book_products WHERE sku = :sku";
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(':sku', $this->getSku());
-        $stmt->execute();
-    }
+    
 }
 
 
