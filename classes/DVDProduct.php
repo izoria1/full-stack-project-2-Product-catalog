@@ -31,23 +31,10 @@ class DVDProduct extends Product {
 
     public static function fetchAll() {
         $db = Database::getInstance()->getConnection();
-
-        // Join the products table with the dvd_products table to fetch all DVD products
-        $query = "SELECT p.sku, p.name, p.price, d.size 
-                  FROM products p
-                  INNER JOIN dvd_products d ON p.sku = d.sku";
-
+        $query = "SELECT p.sku, p.name, p.price, d.size FROM products p INNER JOIN dvd_products d ON p.sku = d.sku";
         $stmt = $db->prepare($query);
         $stmt->execute();
-
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($products as $product) {
-            echo "SKU: " . $product['sku'] . "\n";
-            echo "Name: " . $product['name'] . "\n";
-            echo "Price: $" . $product['price'] . "\n";
-            echo "Size: " . $product['size'] . " MB\n\n";
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return the data instead of echoing
     }
 
     // Method to delete the product and its specific attributes

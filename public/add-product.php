@@ -44,6 +44,6 @@
         <p>Scandiweb Test Assignment</p>
     </footer>
     <!-- Link to JavaScript for dynamic form handling -->
-    <script src="dynamicForm.js"></script>
+    <script src="js/dynamicForm.js"></script>
 </body>
 </html>

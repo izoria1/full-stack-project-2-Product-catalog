@@ -58,27 +58,10 @@ class FurnitureProduct extends Product {
     // New static method for fetching all furniture products
     public static function fetchAll() {
         $db = Database::getInstance()->getConnection();
-
-        // SQL query to join base product table with the furniture-specific attributes table
         $query = "SELECT p.sku, p.name, p.price, f.height, f.width, f.length FROM products p INNER JOIN furniture_products f ON p.sku = f.sku WHERE p.type = 'furniture'";
-
         $stmt = $db->prepare($query);
         $stmt->execute();
-
-        // Fetch all matching records
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if ($products) {
-            echo "Furniture Products Retrieved Successfully:\n";
-            foreach ($products as $product) {
-                echo "SKU: " . $product['sku'] . ", ";
-                echo "Name: " . $product['name'] . ", ";
-                echo "Price: $" . $product['price'] . ", ";
-                echo "Dimensions: " . $product['height'] . "x" . $product['width'] . "x" . $product['length'] . "\n";
-            }
-        } else {
-            echo "No furniture products found.\n";
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return the data instead of echoing
     }
 
     // Method to delete a furniture product by its SKU

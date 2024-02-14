@@ -39,21 +39,12 @@ class BookProduct extends Product {
     // Static method to fetch all book products
     public static function fetchAll() {
         $db = Database::getInstance()->getConnection();
-        $query = "SELECT p.sku, p.name, p.price, b.weight 
-                  FROM products p 
-                  JOIN book_products b ON p.sku = b.sku 
-                  WHERE p.type = 'book'";
+        $query = "SELECT p.sku, p.name, p.price, b.weight FROM products p JOIN book_products b ON p.sku = b.sku WHERE p.type = 'book'";
         $stmt = $db->prepare($query);
         $stmt->execute();
-        $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($books as $book) {
-            echo "SKU: " . $book['sku'] . "\n";
-            echo "Name: " . $book['name'] . "\n";
-            echo "Price: $" . $book['price'] . "\n";
-            echo "Weight: " . $book['weight'] . " Kg\n\n";
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return the data instead of echoing
     }
+    
 
     // Method to delete a product
     public function delete() {
