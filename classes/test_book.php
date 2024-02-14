@@ -6,15 +6,18 @@ require_once 'BookProduct.php'; // Adjust the path as needed
 $db = Database::getInstance()->getConnection();
 
 // Helper function for testing saves
+// Helper function for testing saves
 function createBookProduct($sku, $name, $price, $weight) {
     try {
         $book = new BookProduct($sku, $name, $price, $weight);
         $book->save();
-        echo "Create: Book product '{$sku}' saved successfully.\n";
+        echo "Create: Book product '{$sku}' saved successfully.\n"; // Only show on success
     } catch (Exception $e) {
         echo "Create: Failed to save '{$sku}'. Error: " . $e->getMessage() . "\n";
+        return; // Early return to avoid displaying success message after failure
     }
 }
+
 
 // Helper function for fetching and displaying book products
 function fetchAllBooks() {
@@ -45,19 +48,19 @@ function deleteBookProduct($sku) {
 }
 
 // Test creating a book product with complete and correct data
-createBookProduct("BOOK555", "The Great Book", 25.99, 1.2);
+createBookProduct("BOOK5555", "The Great Book", 24.99, 1.2);
 
 // Test creating a book product with missing data
 createBookProduct("BOOK101", "", -25.99, -1.2); // Intentionally incorrect to trigger errors
 
 // Test updating a book product
-updateBookProduct("BOOK555", "The Greatest Book", 27.99, 1.5);
+updateBookProduct("BOOK5555", "The Greatest Book", 27.99, 1.5);
 
 // Fetch and display all books to see the changes
 fetchAllBooks();
 
 // Test deleting a book product
-deleteBookProduct("BOOK555");
+deleteBookProduct("BOOK5555");
 
 // Attempt to fetch and display all books after deletion
 fetchAllBooks();
