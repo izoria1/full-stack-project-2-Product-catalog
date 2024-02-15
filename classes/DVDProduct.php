@@ -53,14 +53,13 @@ class DVDProduct extends Product {
             $deleteProduct = $db->prepare("DELETE FROM products WHERE sku = :sku");
             $deleteProduct->execute([':sku' => $sku]);
     
+            // Commit the transaction if deletion was successful
             if ($deleteProduct->rowCount() > 0) {
-                // If deletion was successful, commit the transaction
                 $db->commit();
-                echo "Product with SKU $sku deleted successfully.\n";
+                return true; // Indicate success
             } else {
-                // If no rows were affected, roll back the transaction and report failure
                 $db->rollBack();
-                echo "No product found with SKU $sku, or deletion failed.\n";
+                return false; // Indicate failure, no rows affected
             }
         } catch (Exception $e) {
             // On error, roll back the transaction and re-throw the exception
@@ -72,7 +71,7 @@ class DVDProduct extends Product {
     // Overridden save method to include size and database logic
     public function save() {
         $db = Database::getInstance()->getConnection();
-    
+
         try {
             $db->beginTransaction();
     
@@ -92,12 +91,12 @@ class DVDProduct extends Product {
             $stmt->execute();
     
             $this->saveSpecificAttributes($db);
-    
+
             $db->commit();
-            echo "DVD Product saved successfully.\n";
+            return true; // Indicate success
         } catch (Exception $e) {
             $db->rollBack();
-            echo "Error saving product: " . $e->getMessage() . "\n";
+            return false; // Indicate failure
         }
     }
 

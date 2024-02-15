@@ -6,66 +6,90 @@ body {
     background-color: #f4f4f4;
 }
 
-header, footer {
-    padding: 20px;
-    text-align: center;
-    color: #ffffff;
+main {
+    /* Ensure there's enough space at the bottom */
+    padding-bottom: 100px; /* Adjust the value based on your footer's height */
 }
 
 header {
     background-color: #007bff;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+header h1 {
+    margin: 0;
+}
+
 
 footer {
     background-color: #333;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px;
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
 }
 
-section {
-    padding: 20px;
-}
 
-/* Form and Buttons Styling */
-form, .button, button[type="submit"] {
-    border-radius: 4px;
-    padding: 10px 20px;
-    text-align: center;
-    display: inline-block;
-    margin: 4px 2px;
-    font-size: 16px;
-    cursor: pointer;
-}
 
-form {
-    background: #ffffff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-label, input[type="text"], input[type="number"], select {
-    display: block;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-input[type="text"], input[type="number"], select {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-.button, button[type="submit"] {
+/* Buttons and Links */
+.button, .btn-save {
     background-color: #007bff;
     color: #ffffff;
     border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-.button:hover, button[type="submit"]:hover {
+.button:hover, .btn-save:hover {
     background-color: #0056b3;
 }
 
-/* Product List Page Styling */
+.cancel {
+    background-color: #6c757d;
+}
+
+.cancel:hover {
+    background-color: #5a6268;
+}
+
+/* Form styling */
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Product List Page */
 #product-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -76,16 +100,21 @@ input[type="text"], input[type="number"], select {
 .product-item {
     background: #ffffff;
     border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     position: relative;
 }
 
-.product-item h2, .product-item p {
-    margin: 0 0 10px;
+.product-item h3, .product-item p {
+    margin: 5px 0;
 }
 
-/* Action Buttons and Checkbox */
+/* Ensure that the form doesn't extend into the footer area */
+.product-form {
+    margin-bottom: 50px; /* Provide some space at the bottom of the form */
+}
+
 .delete-checkbox {
     position: absolute;
     top: 10px;
@@ -93,7 +122,7 @@ input[type="text"], input[type="number"], select {
 }
 
 #delete-product-btn {
-    background-color: #dc3545; /* Red color for deletion */
+    background-color: #dc3545;
 }
 
 #delete-product-btn:hover {
@@ -102,9 +131,17 @@ input[type="text"], input[type="number"], select {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-    .button, button[type="submit"] {
+    header {
+        flex-direction: column;
+    }
+
+    .button, .btn-save {
         width: 100%;
-        margin: 10px 0;
+        margin-top: 10px;
+    }
+
+    form {
+        width: 90%;
+        margin: 20px auto;
     }
 }
-

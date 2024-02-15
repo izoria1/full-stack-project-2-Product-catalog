@@ -67,30 +67,30 @@ class FurnitureProduct extends Product {
     // Method to delete a furniture product by its SKU
     public static function delete($sku) {
         $db = Database::getInstance()->getConnection();
-
+    
         // Begin transaction to ensure data integrity
         $db->beginTransaction();
-
+    
         try {
             // First, delete the specific attributes in the furniture_products table
             $deleteSpecificQuery = "DELETE FROM furniture_products WHERE sku = :sku";
             $stmt = $db->prepare($deleteSpecificQuery);
             $stmt->bindValue(':sku', $sku);
             $stmt->execute();
-
+    
             // Then, delete the base product record in the products table
             $deleteProductQuery = "DELETE FROM products WHERE sku = :sku";
             $stmt = $db->prepare($deleteProductQuery);
             $stmt->bindValue(':sku', $sku);
             $stmt->execute();
-
+    
             // Commit the transaction
             $db->commit();
-            echo "Furniture Product with SKU $sku deleted successfully.\n";
+            return true; // Indicate success
         } catch (Exception $e) {
             // Rollback the transaction in case of error
             $db->rollBack();
-            throw new Exception("Failed to delete Furniture Product with SKU $sku: " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -119,10 +119,10 @@ class FurnitureProduct extends Product {
             $this->saveSpecificAttributes($db);
 
             $db->commit();
-            echo "Furniture Product saved successfully.\n";
+            return true; // Success
         } catch (Exception $e) {
             $db->rollBack();
-            echo "Error saving product: " . $e->getMessage() . "\n";
+            return false; // Failure
         }
     }
     

@@ -47,26 +47,34 @@ class BookProduct extends Product {
     
 
     // Method to delete a product
-    public function delete() {
+    public static function delete($sku) {
         $db = Database::getInstance()->getConnection();
 
+        // Begin transaction to ensure data integrity
+        $db->beginTransaction();
+
         try {
-            $db->beginTransaction();
-
-            // Call deleteSpecificAttributes to remove book-specific data
-            $this->deleteSpecificAttributes($db, false); // Pass false to indicate skipping validation
-
-            // Then, delete the general product data
-            $query = "DELETE FROM products WHERE sku = :sku";
-            $stmt = $db->prepare($query);
-            $stmt->bindValue(':sku', $this->sku); // Use directly assigned property
+            // First, delete book-specific attributes
+            $deleteSpecificQuery = "DELETE FROM book_products WHERE sku = :sku";
+            $stmt = $db->prepare($deleteSpecificQuery);
+            $stmt->bindValue(':sku', $sku);
             $stmt->execute();
 
+            // Then, delete the general product data from the products table
+            $deleteProductQuery = "DELETE FROM products WHERE sku = :sku";
+            $stmt = $db->prepare($deleteProductQuery);
+            $stmt->bindValue(':sku', $sku);
+            $stmt->execute();
+
+            // If the deletion was successful, commit the transaction
             $db->commit();
-            echo "Product deleted successfully.\n";
+            // Optionally, you can return true to indicate success, or simply ensure no exceptions are thrown
+            return true;
         } catch (Exception $e) {
+            // Rollback the transaction in case of error
             $db->rollBack();
-            echo "Error: Failed to delete product. " . $e->getMessage() . "\n";
+            // Optionally, you can re-throw the exception or return false to indicate failure
+            throw $e;
         }
     }
 
@@ -83,15 +91,13 @@ class BookProduct extends Product {
     // Implement abstract methods
     public function save() {
         $db = Database::getInstance()->getConnection();
-    
+
         try {
             $db->beginTransaction();
-    
-            // Check for missing or invalid data explicitly
             if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || !is_numeric($this->getWeight())) {
                 throw new Exception("Please ensure all fields are filled correctly. SKU, Name, Price, and Weight are required.");
             }
-    
+
             if (!$this->isSkuUnique($db, $this->getSku())) {
                 throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
             }
@@ -106,12 +112,13 @@ class BookProduct extends Product {
             $this->saveSpecificAttributes($db);
     
             $db->commit();
-            echo "Book Product saved successfully.\n";
+            return true; // Indicate success
         } catch (Exception $e) {
             $db->rollBack();
-            echo "Error saving product: " . $e->getMessage() . "\n";
+            // Log error or handle it as per the application's error handling policy
+            return false; // Indicate failure
         }
-    }    
+    }  
 
     // New update method
     public function update() {

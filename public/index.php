@@ -33,11 +33,11 @@
                 echo "<p>Size: {$product['size']} MB</p>";
             } elseif (isset($product['weight'])) {
                 echo "<p>Weight: {$product['weight']} Kg</p>";
-            } elseif (isset($product['dimensions'])) {
-                echo "<p>Dimensions: {$product['dimensions']}</p>";
+            } elseif (isset($product['height']) && isset($product['width']) && isset($product['length'])) {
+                echo "<p>Dimensions: {$product['height']}x{$product['width']}x{$product['length']} cm</p>";
             }
             echo "</div>";
-        }
+        }        
         ?>
     </form>
     <footer>

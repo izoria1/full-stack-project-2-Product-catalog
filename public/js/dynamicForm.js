@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const productTypeSelector = document.getElementById("productType");
     const specificFieldsContainer = document.getElementById("specificFields");
-    const form = document.getElementById("product_form");
 
     // Dynamically update form fields based on the selected product type
     function updateFormFields() {
@@ -28,46 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
         specificFieldsContainer.innerHTML = typeFields[type] || '';
     }
 
-    // Validate the form before submission
-    function validateForm(event) {
-        const type = productTypeSelector.value;
-        if (!type) {
-            alert("Please select a product type.");
-            event.preventDefault();
-            return false;
-        }
-        // Additional validation logic as needed...
-    }
-
-    // AJAX form submission
-    function submitForm(event) {
-        event.preventDefault(); // Prevent default submission
-
-        const formData = new FormData(form);
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success) {
-                window.location.href = 'index.php'; // Redirect on success
-            } else {
-                alert(data.message); // Show error message
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-        });
-    }
-
-    // Bind event listeners
+    // Bind event listener to the product type selector
     productTypeSelector.addEventListener("change", updateFormFields);
-    form.addEventListener("submit", function(event) {
-        validateForm(event);
-        submitForm(event);
-    });
 
     // Initial update to ensure form matches the default or initial selection
     updateFormFields();
