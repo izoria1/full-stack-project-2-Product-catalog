@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const specificFieldsContainer = document.getElementById("specificFields");
     const form = document.getElementById("product-form");
     const typeError = document.getElementById("typeError"); // Get the error message container
+    const priceInput = document.getElementById("price");
+    const priceError = document.getElementById("priceError"); // Get the price error message container
 
     // Function to hide error message when a valid product type is selected
     function hideErrorMessage() {
@@ -42,12 +44,29 @@ document.addEventListener("DOMContentLoaded", function() {
     // Bind event listener to the product type selector to update form fields and hide the error message
     productTypeSelector.addEventListener("change", updateFormFields);
 
-    // Function to validate the form
+    // Enhance validateForm function to include price validation
     function validateForm(event) {
+        let isValid = true;
+
         // Check if the product type is selected
         if (productTypeSelector.value === "") {
-            event.preventDefault(); // Prevent form submission
             typeError.style.display = 'block'; // Show the error message
+            isValid = false;
+        } else {
+            typeError.style.display = 'none'; // Hide the error message
+        }
+
+        // Validate price is greater than 0
+        const priceValue = parseFloat(priceInput.value);
+        if (isNaN(priceValue) || priceValue <= 0) {
+            priceError.style.display = 'block'; // Show the price error message
+            isValid = false;
+        } else {
+            priceError.style.display = 'none'; // Hide the price error message
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent form submission if validation fails
         }
     }
 

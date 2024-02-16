@@ -25,8 +25,9 @@
                 <div class="form-group">
                     <label for="price">Price ($):</label>
                     <input type="number" id="price" name="price" step="0.01" required>
+                    <!-- Price error message container -->
+                    <div id="priceError" class="error-message" style="display: none; color: red;">Price must be greater than 0.</div>
                 </div>
-                <div class="form-group">
                     <label for="productType">Type Switcher:</label>
                     <select id="productType" name="type">
                         <option value="">Select Type</option>
