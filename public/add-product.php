@@ -34,6 +34,8 @@
                         <option value="Book">Book</option>
                         <option value="Furniture">Furniture</option>
                     </select>
+                    <!-- Error message container -->
+                    <div id="typeError" class="error-message" style="display: none; color: red;">Please select a product type.</div>
                 </div>
                 <div id="specificFields"></div>
                 <div class="form-actions"> <!-- For buttons -->

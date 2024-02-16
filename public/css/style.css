@@ -89,6 +89,7 @@ input[type="text"], input[type="number"], select {
     border-radius: 4px;
 }
 
+
 /* Product List Page */
 #product-list {
     display: grid;
