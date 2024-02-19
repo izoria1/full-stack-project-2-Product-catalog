@@ -3,33 +3,39 @@
 require_once 'Product.php'; // Ensure this path is correct
 require_once 'Database.php'; // Ensure this path is correct
 
-class DVDProduct extends Product {
+class DVDProduct extends Product
+{
     protected $size; // Size in MB
 
-    public function __construct($sku, $name, $price, $size) {
+    public function __construct($sku, $name, $price, $size)
+    {
         parent::__construct($sku, $name, $price);
         $this->setSize($size); // Apply validation through the setter
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->size;
     }
 
-    public function setSize($size) {
+    public function setSize($size)
+    {
         if (!is_numeric($size) || $size <= 0) {
             throw new InvalidArgumentException("Size must be a positive number.");
         }
         $this->size = $size;
     }
 
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
         }
         $this->price = $price;
     }
 
-    public static function fetchAll() {
+    public static function fetchAll()
+    {
         $db = Database::getInstance()->getConnection();
         $query = "SELECT p.sku, p.name, p.price, d.size FROM products p INNER JOIN dvd_products d ON p.sku = d.sku";
         $stmt = $db->prepare($query);
@@ -38,7 +44,8 @@ class DVDProduct extends Product {
     }
 
     // Method to delete the product and its specific attributes
-    public static function delete($sku) {
+    public static function delete($sku)
+    {
         $db = Database::getInstance()->getConnection();
     
         // Start transaction
@@ -69,7 +76,8 @@ class DVDProduct extends Product {
     }
 
     // Overridden save method to include size and database logic
-    public function save() {
+    public function save()
+    {
         $db = Database::getInstance()->getConnection();
 
         try {
@@ -101,7 +109,8 @@ class DVDProduct extends Product {
     }
 
     // Implement the abstract display method
-    public function display() {
+    public function display()
+    {
         // Display logic for DVDProduct
         echo "Displaying DVD Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
@@ -110,7 +119,8 @@ class DVDProduct extends Product {
         echo "Size: " . $this->getSize() . " MB\n";
     }
 
-    private function isSkuUnique($db, $sku) {
+    private function isSkuUnique($db, $sku)
+    {
         $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $sku);
@@ -118,7 +128,8 @@ class DVDProduct extends Product {
         return $stmt->fetchColumn() == 0;
     }
 
-    public function saveSpecificAttributes($db) {
+    public function saveSpecificAttributes($db)
+    {
         $query = "INSERT INTO dvd_products (sku, size) VALUES (:sku, :size)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -127,7 +138,8 @@ class DVDProduct extends Product {
     }
 
     // New method to update specific attributes
-    public function updateSpecificAttributes($db) {
+    public function updateSpecificAttributes($db)
+    {
         $query = "UPDATE dvd_products SET size = :size WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -136,7 +148,8 @@ class DVDProduct extends Product {
     }
 
     // New method to delete specific attributes
-    public function deleteSpecificAttributes($db) {
+    public function deleteSpecificAttributes($db)
+    {
         $query = "DELETE FROM dvd_products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -144,7 +157,8 @@ class DVDProduct extends Product {
     }
 
     // Method to update the product and its specific attributes
-    public function update() {
+    public function update()
+    {
         $db = Database::getInstance()->getConnection();
 
         // Check if the product exists
@@ -178,8 +192,4 @@ class DVDProduct extends Product {
             throw $e; // Re-throw the exception for further handling
         }
     }
-
 }
-
-
-

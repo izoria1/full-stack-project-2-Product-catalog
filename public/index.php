@@ -23,7 +23,9 @@
         // Fetch all products
         $allProducts = array_merge(DVDProduct::fetchAll(), BookProduct::fetchAll(), FurnitureProduct::fetchAll());
         // Sort products by SKU
-        usort($allProducts, function ($a, $b) { return $a['sku'] <=> $b['sku']; });
+        usort($allProducts, function ($a, $b) {
+            return $a['sku'] <=> $b['sku'];
+        });
 
         foreach ($allProducts as $product) {
             echo "<div class='product-item'>";
@@ -37,7 +39,7 @@
                 echo "<p>Dimensions: {$product['height']}x{$product['width']}x{$product['length']} cm</p>";
             }
             echo "</div>";
-        }        
+        }
         ?>
     </form>
     <footer>

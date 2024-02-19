@@ -5,21 +5,24 @@ require_once 'DVDProduct.php';
 require_once 'BookProduct.php';
 require_once 'FurnitureProduct.php';
 
-class ProductFactory {
+class ProductFactory
+{
     protected $productTypeClassMap = [
         'DVD' => 'DVDProduct',
         'Book' => 'BookProduct',
         'Furniture' => 'FurnitureProduct',
     ];
 
-    public function __construct($productTypeClassMap = []) {
+    public function __construct($productTypeClassMap = [])
+    {
         // Override the default mapping with any custom mapping provided
         if (!empty($productTypeClassMap)) {
             $this->productTypeClassMap = array_merge($this->productTypeClassMap, $productTypeClassMap);
         }
     }
 
-    public function createProduct($type, $sku, $name, $price, $specificAttribute) {
+    public function createProduct($type, $sku, $name, $price, $specificAttribute)
+    {
         if (!isset($this->productTypeClassMap[$type])) {
             throw new InvalidArgumentException("Invalid product type: " . $type);
         }

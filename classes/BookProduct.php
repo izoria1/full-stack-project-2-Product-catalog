@@ -3,12 +3,14 @@
 require_once 'Product.php'; // Ensure this path is correct
 require_once 'Database.php'; // Ensure the path to Database.php is correct
 
-class BookProduct extends Product {
+class BookProduct extends Product
+{
     // Additional property specific to BookProduct
     private $weight;
     
     // Constructor
-    public function __construct($sku, $name, $price, $weight) {
+    public function __construct($sku, $name, $price, $weight)
+    {
         parent::__construct($sku, $name, $price);
         // Directly assign values without validation for internal use to avoid deletion issue
         $this->sku = $sku;
@@ -18,18 +20,21 @@ class BookProduct extends Product {
     }
     
     // Getter and Setter for Weight
-    public function getWeight() {
+    public function getWeight()
+    {
         return $this->weight;
     }
     
-    public function setWeight($weight) {
+    public function setWeight($weight)
+    {
         if (!is_numeric($weight) || $weight <= 0) {
             throw new InvalidArgumentException("Weight must be a positive number.");
         }
         $this->weight = $weight;
     }
 
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
         }
@@ -37,7 +42,8 @@ class BookProduct extends Product {
     }
 
     // Static method to fetch all book products
-    public static function fetchAll() {
+    public static function fetchAll()
+    {
         $db = Database::getInstance()->getConnection();
         $query = "SELECT p.sku, p.name, p.price, b.weight FROM products p JOIN book_products b ON p.sku = b.sku WHERE p.type = 'book'";
         $stmt = $db->prepare($query);
@@ -47,7 +53,8 @@ class BookProduct extends Product {
     
 
     // Method to delete a product
-    public static function delete($sku) {
+    public static function delete($sku)
+    {
         $db = Database::getInstance()->getConnection();
 
         // Begin transaction to ensure data integrity
@@ -78,7 +85,8 @@ class BookProduct extends Product {
         }
     }
 
-    protected function deleteSpecificAttributes($db, $validate = true) {
+    protected function deleteSpecificAttributes($db, $validate = true)
+    {
         if ($validate && (!is_numeric($this->weight) || $this->weight <= 0)) {
             throw new InvalidArgumentException("Weight must be a positive number for deletion.");
         }
@@ -89,7 +97,8 @@ class BookProduct extends Product {
     }
     
     // Implement abstract methods
-    public function save() {
+    public function save()
+    {
         $db = Database::getInstance()->getConnection();
 
         try {
@@ -118,10 +127,11 @@ class BookProduct extends Product {
             // Log error or handle it as per the application's error handling policy
             return false; // Indicate failure
         }
-    }  
+    }
 
     // New update method
-    public function update() {
+    public function update()
+    {
         $db = Database::getInstance()->getConnection();
     
         // Start transaction
@@ -151,7 +161,8 @@ class BookProduct extends Product {
     }
     
     
-    public function display() {
+    public function display()
+    {
         echo "Displaying Book Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
         echo "Name: " . $this->getName() . "\n";
@@ -159,7 +170,8 @@ class BookProduct extends Product {
         echo "Weight: " . $this->getWeight() . " Kg\n";
     }
 
-    private function isSkuUnique($db, $sku) {
+    private function isSkuUnique($db, $sku)
+    {
         $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $sku);
@@ -169,7 +181,8 @@ class BookProduct extends Product {
     }
 
     // New method to save specific attributes
-    public function saveSpecificAttributes($db) {
+    public function saveSpecificAttributes($db)
+    {
         $query = "INSERT INTO book_products (sku, weight) VALUES (:sku, :weight)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -178,7 +191,8 @@ class BookProduct extends Product {
     }
 
     // New method to update specific attributes
-    public function updateSpecificAttributes($db) {
+    public function updateSpecificAttributes($db)
+    {
         $query = "UPDATE book_products SET weight = :weight WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -187,7 +201,4 @@ class BookProduct extends Product {
     }
 
     // New method to delete specific attributes
-    
 }
-
-

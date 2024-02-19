@@ -10,11 +10,11 @@ $(document).ready(function () {
                 url: '../actions/delete_product_action.php', // Path to your delete action
                 type: 'POST',
                 data: {skus: skusToDelete},
-                success: function(response) {
+                success: function (response) {
                     // Reload the page to reflect the changes
                     location.reload();
                 },
-                error: function() {
+                error: function () {
                     alert('Error deleting products.');
                 }
             });

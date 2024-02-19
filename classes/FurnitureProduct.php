@@ -3,52 +3,61 @@
 require_once 'Product.php'; // Ensure this path is correct
 require_once 'Database.php'; // Ensure this path is correct
 
-class FurnitureProduct extends Product {
+class FurnitureProduct extends Product
+{
     protected $height;
     protected $width;
     protected $length;
 
-    public function __construct($sku, $name, $price, $height, $width, $length) {
+    public function __construct($sku, $name, $price, $height, $width, $length)
+    {
         parent::__construct($sku, $name, $price);
         $this->setHeight($height);
         $this->setWidth($width);
         $this->setLength($length);
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
     
-    public function setHeight($height) {
+    public function setHeight($height)
+    {
         if (!is_numeric($height) || $height <= 0) {
             throw new InvalidArgumentException("Height must be a positive number.");
         }
         $this->height = $height;
     }
     
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
     
-    public function setWidth($width) {
+    public function setWidth($width)
+    {
         if (!is_numeric($width) || $width <= 0) {
             throw new InvalidArgumentException("Width must be a positive number.");
         }
         $this->width = $width;
     }
     
-    public function getLength() {
+    public function getLength()
+    {
         return $this->length;
     }
     
-    public function setLength($length) {
+    public function setLength($length)
+    {
         if (!is_numeric($length) || $length <= 0) {
             throw new InvalidArgumentException("Length must be a positive number.");
         }
         $this->length = $length;
     }
 
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
         }
@@ -56,7 +65,8 @@ class FurnitureProduct extends Product {
     }
     
     // New static method for fetching all furniture products
-    public static function fetchAll() {
+    public static function fetchAll()
+    {
         $db = Database::getInstance()->getConnection();
         $query = "SELECT p.sku, p.name, p.price, f.height, f.width, f.length FROM products p INNER JOIN furniture_products f ON p.sku = f.sku WHERE p.type = 'furniture'";
         $stmt = $db->prepare($query);
@@ -65,7 +75,8 @@ class FurnitureProduct extends Product {
     }
 
     // Method to delete a furniture product by its SKU
-    public static function delete($sku) {
+    public static function delete($sku)
+    {
         $db = Database::getInstance()->getConnection();
     
         // Begin transaction to ensure data integrity
@@ -94,13 +105,14 @@ class FurnitureProduct extends Product {
         }
     }
 
-    public function save() {
+    public function save()
+    {
         $db = Database::getInstance()->getConnection();
 
         try {
             $db->beginTransaction();
 
-            if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || 
+            if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) ||
                 !is_numeric($this->getHeight()) || !is_numeric($this->getWidth()) || !is_numeric($this->getLength())) {
                 throw new Exception("Please ensure all fields are filled correctly with valid numeric values.");
             }
@@ -126,7 +138,8 @@ class FurnitureProduct extends Product {
         }
     }
     
-    public function display() {
+    public function display()
+    {
         echo "Displaying Furniture Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
         echo "Name: " . $this->getName() . "\n";
@@ -134,7 +147,8 @@ class FurnitureProduct extends Product {
         echo "Dimensions: " . $this->getHeight() . "x" . $this->getWidth() . "x" . $this->getLength() . "\n";
     }
 
-    private function isSkuUnique($db, $sku) {
+    private function isSkuUnique($db, $sku)
+    {
         $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $sku);
@@ -142,7 +156,8 @@ class FurnitureProduct extends Product {
         return $stmt->fetchColumn() == 0;
     }
 
-    public function update() {
+    public function update()
+    {
         $db = Database::getInstance()->getConnection();
 
         // Check if the product exists
@@ -177,7 +192,8 @@ class FurnitureProduct extends Product {
         }
     }
 
-    public function saveSpecificAttributes($db) {
+    public function saveSpecificAttributes($db)
+    {
         // Insert into furniture_products table
         $query = "INSERT INTO furniture_products (sku, height, width, length) VALUES (:sku, :height, :width, :length)";
         $stmt = $db->prepare($query);
@@ -189,7 +205,8 @@ class FurnitureProduct extends Product {
     }
 
     // New method to update specific attributes
-    public function updateSpecificAttributes($db) {
+    public function updateSpecificAttributes($db)
+    {
         $query = "UPDATE furniture_products SET height = :height, width = :width, length = :length WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -200,11 +217,11 @@ class FurnitureProduct extends Product {
     }
 
     // New method to delete specific attributes
-    public function deleteSpecificAttributes($db) {
+    public function deleteSpecificAttributes($db)
+    {
         $query = "DELETE FROM furniture_products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
         $stmt->execute();
     }
 }
-
