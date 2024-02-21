@@ -10,9 +10,23 @@
 <body>
     <header>
         <h1>Product Catalog</h1>
-        <a href="add-product.php" class="button">ADD</a>
-        <button id="delete-product-btn" class="button">MASS DELETE</button>
+        <div class="container">
+            <a href="add-product.php">
+                <button id="add-product-btn">
+                    <img src="images/plus.png" class="plus-icon" alt="add button" />
+                </button>
+            </a>
+    
+            <button id="delete-product-btn">
+                <img src="images/delete.png" class="delete-icon" alt="delete button" />
+            </button>
+        </div>
     </header>
+
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
     <form id="product-list" method="post">
         <?php
         require_once '../classes/Database.php';
@@ -30,7 +44,8 @@
         foreach ($allProducts as $product) {
             echo "<div class='product-item'>";
             echo "<input type='checkbox' class='delete-checkbox' name='delete-checkbox[]' value='{$product['sku']}' />";
-            echo "<h3>{$product['name']}</h3><p>SKU: {$product['sku']}</p><p>Price: \${$product['price']}</p>";
+            echo "<p>{$product['sku']}</p>"; // SKU comes first
+            echo "<h3>{$product['name']}</h3><p>Price: \${$product['price']}</p>"; // Name follows
             if (isset($product['size'])) {
                 echo "<p>Size: {$product['size']} MB</p>";
             } elseif (isset($product['weight'])) {
@@ -42,8 +57,9 @@
         }
         ?>
     </form>
+    
     <footer>
-        <p>Scandiweb Test Assignment</p>
+        <p>Test Assignment</p>
     </footer>
     <script src="js/script.js"></script>
 </body>

@@ -1,92 +1,86 @@
 <?php
 
-require_once 'Product.php'; // Ensure this path is correct
-require_once 'Database.php'; // Ensure this path is correct
+require_once 'Product.php'; // Ensure this path correctly points to the Product class
+require_once 'Database.php'; // Ensure this path correctly points to the Database connection class
 
-class DVDProduct extends Product
-{
-    protected $size; // Size in MB
+class DVDProduct extends Product {
+    protected $size; // Holds the size of the DVD in MB
 
-    public function __construct($sku, $name, $price, $size)
-    {
+    // Constructor initializes DVD product with SKU, name, price, and size
+    public function __construct($sku, $name, $price, $size) {
         parent::__construct($sku, $name, $price);
-        $this->setSize($size); // Apply validation through the setter
+        $this->setSize($size); // Set size with validation
     }
 
-    public function getSize()
-    {
+    // Returns the size of the DVD
+    public function getSize() {
         return $this->size;
     }
 
-    public function setSize($size)
-    {
+    // Sets the size after validating it as a positive number
+    public function setSize($size) {
         if (!is_numeric($size) || $size <= 0) {
             throw new InvalidArgumentException("Size must be a positive number.");
         }
         $this->size = $size;
     }
 
-    public function setPrice($price)
-    {
+    // Sets the price after validating it as a non-negative number
+    public function setPrice($price) {
         if (!is_numeric($price) || $price < 0) {
             throw new InvalidArgumentException("Price cannot be negative.");
         }
         $this->price = $price;
     }
 
-    public static function fetchAll()
-    {
+    // Fetches all DVD products from the database
+    public static function fetchAll() {
         $db = Database::getInstance()->getConnection();
         $query = "SELECT p.sku, p.name, p.price, d.size FROM products p INNER JOIN dvd_products d ON p.sku = d.sku";
         $stmt = $db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return the data instead of echoing
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Returns fetched data
     }
 
-    // Method to delete the product and its specific attributes
-    public static function delete($sku)
-    {
+    // Deletes a DVD product by SKU, handling related attributes first to maintain integrity
+    public static function delete($sku) {
         $db = Database::getInstance()->getConnection();
     
-        // Start transaction
-        $db->beginTransaction();
+        $db->beginTransaction(); // Starts transaction
     
         try {
-            // First, delete DVD-specific attributes to avoid foreign key constraint issues
             $deleteSpecific = $db->prepare("DELETE FROM dvd_products WHERE sku = :sku");
             $deleteSpecific->execute([':sku' => $sku]);
     
-            // Then, delete the product from the base table
             $deleteProduct = $db->prepare("DELETE FROM products WHERE sku = :sku");
             $deleteProduct->execute([':sku' => $sku]);
     
-            // Commit the transaction if deletion was successful
             if ($deleteProduct->rowCount() > 0) {
-                $db->commit();
-                return true; // Indicate success
+                $db->commit(); // Commits transaction if successful
+                return true; 
             } else {
-                $db->rollBack();
-                return false; // Indicate failure, no rows affected
+                $db->rollBack(); // Rolls back if no product was deleted
+                return false; 
             }
         } catch (Exception $e) {
-            // On error, roll back the transaction and re-throw the exception
-            $db->rollBack();
-            throw $e;
+            $db->rollBack(); // Rolls back on error
+            throw $e; 
         }
     }
 
-    // Overridden save method to include size and database logic
-    public function save()
-    {
+    // Saves a new DVD product to the database, including specific attributes
+    public function save() {
         $db = Database::getInstance()->getConnection();
 
         try {
-            $db->beginTransaction();
+            $db->beginTransaction(); // Starts transaction
     
+            // Validates required fields
             if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) || !is_numeric($this->getSize())) {
                 throw new Exception("Please ensure all fields are filled correctly. SKU, Name, Price, and Size are required.");
             }
     
+            // Checks SKU uniqueness
             if (!$this->isSkuUnique($db, $this->getSku())) {
                 throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
             }
@@ -98,20 +92,18 @@ class DVDProduct extends Product
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->execute();
     
-            $this->saveSpecificAttributes($db);
+            $this->saveSpecificAttributes($db); // Saves DVD-specific attributes
 
-            $db->commit();
-            return true; // Indicate success
+            $db->commit(); // Commits transaction
+            return true; 
         } catch (Exception $e) {
-            $db->rollBack();
-            return false; // Indicate failure
+            $db->rollBack(); // Rolls back on failure
+            return false;
         }
     }
 
-    // Implement the abstract display method
-    public function display()
-    {
-        // Display logic for DVDProduct
+    // Displays DVD product details
+    public function display() {
         echo "Displaying DVD Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
         echo "Name: " . $this->getName() . "\n";
@@ -119,17 +111,17 @@ class DVDProduct extends Product
         echo "Size: " . $this->getSize() . " MB\n";
     }
 
-    private function isSkuUnique($db, $sku)
-    {
+    // Checks if the SKU is unique in the database
+    private function isSkuUnique($db, $sku) {
         $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $sku);
         $stmt->execute();
-        return $stmt->fetchColumn() == 0;
+        return $stmt->fetchColumn() == 0; // Returns true if SKU is unique
     }
 
-    public function saveSpecificAttributes($db)
-    {
+    // Saves DVD-specific attributes to the database
+    public function saveSpecificAttributes($db) {
         $query = "INSERT INTO dvd_products (sku, size) VALUES (:sku, :size)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -137,9 +129,8 @@ class DVDProduct extends Product
         $stmt->execute();
     }
 
-    // New method to update specific attributes
-    public function updateSpecificAttributes($db)
-    {
+    // Updates DVD-specific attributes in the database
+    public function updateSpecificAttributes($db) {
         $query = "UPDATE dvd_products SET size = :size WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -147,32 +138,29 @@ class DVDProduct extends Product
         $stmt->execute();
     }
 
-    // New method to delete specific attributes
-    public function deleteSpecificAttributes($db)
-    {
+    // Deletes DVD-specific attributes from the database
+    public function deleteSpecificAttributes($db) {
         $query = "DELETE FROM dvd_products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
         $stmt->execute();
     }
 
-    // Method to update the product and its specific attributes
-    public function update()
-    {
+    // Updates a DVD product and its specific attributes in the database
+    public function update() {
         $db = Database::getInstance()->getConnection();
 
-        // Check if the product exists
+        // Verifies product existence before update
         $stmt = $db->prepare("SELECT COUNT(*) FROM products WHERE sku = :sku");
         $stmt->execute([':sku' => $this->getSku()]);
         if ($stmt->fetchColumn() == 0) {
             throw new Exception("Product with SKU {$this->getSku()} does not exist.");
         }
 
-        // Transaction begins
-        $db->beginTransaction();
+        $db->beginTransaction(); // Begins transaction
 
         try {
-            // Update base product data
+            // Updates product information in the products table
             $stmt = $db->prepare("UPDATE products SET name = :name, price = :price WHERE sku = :sku");
             $stmt->execute([
                 ':sku' => $this->getSku(),
@@ -180,16 +168,13 @@ class DVDProduct extends Product
                 ':price' => $this->getPrice()
             ]);
 
-            // Update DVD-specific attributes
-            $this->updateSpecificAttributes($db);
+            $this->updateSpecificAttributes($db); // Updates DVD-specific attributes
 
-            // Commit transaction
-            $db->commit();
+            $db->commit(); // Commits the transaction
             echo "Updated DVD Product successfully.\n";
         } catch (Exception $e) {
-            // Rollback transaction if something goes wrong
-            $db->rollBack();
-            throw $e; // Re-throw the exception for further handling
+            $db->rollBack(); // Rolls back transaction on error
+            throw $e; // Re-throws the exception for further handling
         }
     }
 }

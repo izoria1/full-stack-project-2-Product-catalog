@@ -1,27 +1,30 @@
 <?php
 
-require_once 'Product.php'; // Ensure this path is correct
-require_once 'Database.php'; // Ensure this path is correct
+require_once 'Product.php'; // Include the base Product class
+require_once 'Database.php'; // Include the Database connection class
 
 class FurnitureProduct extends Product
 {
-    protected $height;
-    protected $width;
-    protected $length;
+    protected $height; // Height of the furniture in centimeters
+    protected $width; // Width of the furniture in centimeters
+    protected $length; // Length of the furniture in centimeters
 
+    // Constructor initializes the furniture product with its specific attributes
     public function __construct($sku, $name, $price, $height, $width, $length)
     {
-        parent::__construct($sku, $name, $price);
+        parent::__construct($sku, $name, $price); // Call to parent constructor of Product class
         $this->setHeight($height);
         $this->setWidth($width);
         $this->setLength($length);
     }
 
+    // Returns the height of the furniture
     public function getHeight()
     {
         return $this->height;
     }
-    
+
+    // Validates and sets the height attribute
     public function setHeight($height)
     {
         if (!is_numeric($height) || $height <= 0) {
@@ -29,12 +32,14 @@ class FurnitureProduct extends Product
         }
         $this->height = $height;
     }
-    
+
+    // Returns the width of the furniture
     public function getWidth()
     {
         return $this->width;
     }
-    
+
+    // Validates and sets the width attribute
     public function setWidth($width)
     {
         if (!is_numeric($width) || $width <= 0) {
@@ -42,12 +47,14 @@ class FurnitureProduct extends Product
         }
         $this->width = $width;
     }
-    
+
+    // Returns the length of the furniture
     public function getLength()
     {
         return $this->length;
     }
-    
+
+    // Validates and sets the length attribute
     public function setLength($length)
     {
         if (!is_numeric($length) || $length <= 0) {
@@ -56,6 +63,7 @@ class FurnitureProduct extends Product
         $this->length = $length;
     }
 
+    // Validates and sets the price attribute
     public function setPrice($price)
     {
         if (!is_numeric($price) || $price < 0) {
@@ -63,64 +71,64 @@ class FurnitureProduct extends Product
         }
         $this->price = $price;
     }
-    
-    // New static method for fetching all furniture products
+
+    // Fetches all furniture products from the database
     public static function fetchAll()
     {
-        $db = Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection(); // Get database connection
         $query = "SELECT p.sku, p.name, p.price, f.height, f.width, f.length FROM products p INNER JOIN furniture_products f ON p.sku = f.sku WHERE p.type = 'furniture'";
         $stmt = $db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return the data instead of echoing
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch and return all matching records
     }
 
-    // Method to delete a furniture product by its SKU
+    // Deletes a furniture product identified by SKU
     public static function delete($sku)
     {
-        $db = Database::getInstance()->getConnection();
-    
-        // Begin transaction to ensure data integrity
-        $db->beginTransaction();
-    
+        $db = Database::getInstance()->getConnection(); // Get database connection
+
+        $db->beginTransaction(); // Start transaction for data integrity
+
         try {
-            // First, delete the specific attributes in the furniture_products table
+            // Delete specific attributes of the furniture product
             $deleteSpecificQuery = "DELETE FROM furniture_products WHERE sku = :sku";
             $stmt = $db->prepare($deleteSpecificQuery);
             $stmt->bindValue(':sku', $sku);
             $stmt->execute();
-    
-            // Then, delete the base product record in the products table
+
+            // Delete the general product record
             $deleteProductQuery = "DELETE FROM products WHERE sku = :sku";
             $stmt = $db->prepare($deleteProductQuery);
             $stmt->bindValue(':sku', $sku);
             $stmt->execute();
-    
-            // Commit the transaction
-            $db->commit();
-            return true; // Indicate success
+
+            $db->commit(); // Commit the transaction
+            return true; // Indicate successful deletion
         } catch (Exception $e) {
-            // Rollback the transaction in case of error
-            $db->rollBack();
+            $db->rollBack(); // Roll back the transaction in case of an error
             throw $e;
         }
     }
 
     public function save()
     {
-        $db = Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection(); // Get database connection
 
         try {
-            $db->beginTransaction();
+            $db->beginTransaction(); // Start transaction for data integrity
 
+            // Validate mandatory fields are correctly filled
             if (empty($this->getSku()) || empty($this->getName()) || !is_numeric($this->getPrice()) ||
                 !is_numeric($this->getHeight()) || !is_numeric($this->getWidth()) || !is_numeric($this->getLength())) {
                 throw new Exception("Please ensure all fields are filled correctly with valid numeric values.");
             }
 
+            // Check for SKU uniqueness
             if (!$this->isSkuUnique($db, $this->getSku())) {
                 throw new Exception("The SKU '{$this->getSku()}' already exists. Please use a unique SKU.");
             }
 
+            // Insert product record into the database
             $query = "INSERT INTO products (sku, name, price, type) VALUES (:sku, :name, :price, 'furniture')";
             $stmt = $db->prepare($query);
             $stmt->bindValue(':sku', $this->getSku());
@@ -128,73 +136,80 @@ class FurnitureProduct extends Product
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->execute();
 
+            // Insert specific furniture attributes into the database
             $this->saveSpecificAttributes($db);
 
-            $db->commit();
-            return true; // Success
+            $db->commit(); // Commit the transaction
+            return true; // Indicate successful save
         } catch (Exception $e) {
-            $db->rollBack();
-            return false; // Failure
+            $db->rollBack(); // Roll back the transaction in case of an error
+            return false; // Indicate failure to save
         }
     }
     
     public function display()
     {
+        // Output the details of the furniture product
         echo "Displaying Furniture Product:\n";
         echo "SKU: " . $this->getSku() . "\n";
         echo "Name: " . $this->getName() . "\n";
         echo "Price: $" . $this->getPrice() . "\n";
         echo "Dimensions: " . $this->getHeight() . "x" . $this->getWidth() . "x" . $this->getLength() . "\n";
     }
-
+    
     private function isSkuUnique($db, $sku)
     {
+        // Check if the provided SKU already exists in the database
         $query = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $sku);
         $stmt->execute();
-        return $stmt->fetchColumn() == 0;
+        return $stmt->fetchColumn() == 0; // True if SKU is unique
     }
-
+    
     public function update()
     {
+        // Connect to the database
         $db = Database::getInstance()->getConnection();
-
-        // Check if the product exists
+    
+        // Verify existence of the product by SKU before updating
         $existCheckQuery = "SELECT COUNT(*) FROM products WHERE sku = :sku";
         $stmt = $db->prepare($existCheckQuery);
         $stmt->bindValue(':sku', $this->getSku());
         $stmt->execute();
-
+    
         if ($stmt->fetchColumn() == 0) {
             throw new Exception("Product with SKU: {$this->getSku()} does not exist.");
         }
-
+    
+        // Begin transaction for updating product details
         $db->beginTransaction();
-
+    
         try {
-            // Update the base product details
+            // Update generic product information
             $productUpdateQuery = "UPDATE products SET name = :name, price = :price WHERE sku = :sku";
             $stmt = $db->prepare($productUpdateQuery);
             $stmt->bindValue(':name', $this->getName());
             $stmt->bindValue(':price', $this->getPrice());
             $stmt->bindValue(':sku', $this->getSku());
             $stmt->execute();
-
-            // Update the specific product attributes
+    
+            // Update specific furniture attributes
             $this->updateSpecificAttributes($db);
-
+    
+            // Commit the transaction after successful update
             $db->commit();
             echo "Furniture Product updated successfully.\n";
         } catch (Exception $e) {
+            // Rollback transaction in case of errors
             $db->rollBack();
             throw $e;
         }
     }
-
+    
     public function saveSpecificAttributes($db)
     {
-        // Insert into furniture_products table
+        // Insert furniture-specific attributes into the database
         $query = "INSERT INTO furniture_products (sku, height, width, length) VALUES (:sku, :height, :width, :length)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -203,10 +218,10 @@ class FurnitureProduct extends Product
         $stmt->bindValue(':length', $this->getLength());
         $stmt->execute();
     }
-
-    // New method to update specific attributes
+    
     public function updateSpecificAttributes($db)
     {
+        // Update furniture-specific attributes in the database
         $query = "UPDATE furniture_products SET height = :height, width = :width, length = :length WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
@@ -215,13 +230,14 @@ class FurnitureProduct extends Product
         $stmt->bindValue(':length', $this->getLength());
         $stmt->execute();
     }
-
-    // New method to delete specific attributes
+    
     public function deleteSpecificAttributes($db)
     {
+        // Delete furniture-specific attributes from the database
         $query = "DELETE FROM furniture_products WHERE sku = :sku";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':sku', $this->getSku());
         $stmt->execute();
     }
+    
 }

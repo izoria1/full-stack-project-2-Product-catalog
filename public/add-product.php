@@ -10,6 +10,11 @@
     <header>
         <h1>Add Product</h1>
     </header>
+
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
     <main> <!-- Use main for the primary content -->
         <section class="form-section"> <!-- Added class for specific styling -->
             <form id="product-form" action="../actions/product_action.php" method="post" class="product-form">
@@ -47,7 +52,7 @@
         </section>
     </main>
     <footer>
-        <p>Scandiweb Test Assignment</p>
+        <p>Test Assignment</p>
     </footer>
     <script src="js/dynamicForm.js"></script>
 </body>

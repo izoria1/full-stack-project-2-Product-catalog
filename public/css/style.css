@@ -1,148 +1,295 @@
-/* General styles */
+/* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-main {
-    /* Ensure there's enough space at the bottom */
-    padding-bottom: 100px; /* Adjust the value based on your footer's height */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0 0 70px; /* Increase bottom padding to accommodate footer */
+  background-color: #f4f4f4;
 }
 
 header {
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 20px;
-    text-align: center;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 20px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header h1 {
-    margin: 0;
+  margin: 0;
+  font-family: monospace;
 }
-
 
 footer {
-    background-color: #333;
-    color: #ffffff;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+  background-color: #09f;
+  color: #ffffff;
+  text-align: center;
+  padding: 5px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px; /* Define a fixed height for the footer */
 }
 
-
-
-/* Buttons and Links */
-.button, .btn-save {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
+/* Buttons and Links Styling */
+.button, .btn-save, .cancel {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .button:hover, .btn-save:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .cancel {
-    background-color: #6c757d;
+  background-color: #6c757d;
 }
 
 .cancel:hover {
-    background-color: #5a6268;
+  background-color: #5a6268;
 }
 
-/* Form styling */
-form {
-    max-width: 600px;
-    margin: 20px auto;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* Error Message Styling */
+.error-message {
+  color: #f44336; /* Error color */
+  margin: 5px 0; /* Space around error message */
 }
 
-label {
-    display: block;
-    margin-bottom: 10px;
+/* Container for Add/Delete Buttons */
+.container {
+  width: 180px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
-input[type="text"], input[type="number"], select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+#add-product-btn, #delete-product-btn {
+  border-radius: 50%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
 }
 
-/* Product List Page */
-#product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust minmax for more items per row */
-    gap: 20px;
-    padding: 20px;
-    margin-bottom: 50px; /* Ensure there's space for the footer */
+#add-product-btn {
+  background-color: #007bff;
 }
 
-.product-item {
-    background: #ffffff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    position: relative;
-}
-
-.product-item h3, .product-item p {
-    margin: 5px 0;
-}
-
-/* Ensure that the form doesn't extend into the footer area */
-.product-form {
-    margin-bottom: 50px; /* Provide some space at the bottom of the form */
-}
-
-.delete-checkbox {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+#add-product-btn:hover {
+  padding: 15px;
+  background-color: #005aba;
 }
 
 #delete-product-btn {
-    background-color: #dc3545;
+  background-color: #dc3545;
 }
 
 #delete-product-btn:hover {
-    background-color: #c82333;
+  padding: 15px;
+  background-color: #a20414;
 }
 
-/* Responsive adjustments */
+.plus-icon, .delete-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Form Styling */
+form {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Add-Product Form Styling */
+.form-section {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: transparent; /* Light background for the form */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 15px; /* Space between form fields */
+}
+
+#product-form {
+  background: #6e7dff;
+}
+
+/* Label Styling */
+form label {
+  display: block;
+  margin-bottom: 5px; /* Space above the input field */
+  color: #f4f4f4; /* Dark color for contrast */
+  font-weight: bold; /* Make labels bold */
+}
+
+/* Input and Select Styling */
+form input[type="text"], form input[type="number"], form select {
+  background: #f4c5ff;
+  width: 100%; /* Full width */
+  padding: 10px; /* Padding for spacing */
+  margin-bottom: 20px; /* Space below each input/select */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.form-actions {
+  text-align: center; /* Center-align the buttons */
+}
+
+/* Product List Styling */
+#product-list {
+  display: grid;
+  background-color: transparent;
+  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+  gap: 20px;
+  padding: 30px;
+  margin: 20px 20px; /* Center the grid container */
+  max-width: calc(100% - 40px); /* Adjust max-width to consider the padding */
+}
+
+
+.product-item {
+  background: linear-gradient(145deg, #6e7dff, #ff7eb3); /* Gradient background */
+  border-radius: 30px; /* Rounded corners */
+  padding: 23px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Box shadow for 3D effect */
+  color: #333; /* Text color */
+  position: relative; /* Allows for absolute positioning of children */
+  overflow: hidden; /* Ensures no overflow outside the border-radius */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* SKU Label */
+.product-item p:first-child {
+  margin-top: -10px; /* Adjust top margin to position SKU closer to the top */
+  font-weight: bold; /* Make SKU bold */
+}
+
+/* Product Name */
+.product-item h3 {
+  font-size: 1.2rem;
+  color: #ffffff; /* White text for better contrast with background */
+  margin: 5px 0; /* Space above and below the name */
+}
+
+/* Price and Specs */
+.product-item p {
+  color: #ffffff; /* White text for better contrast with background */
+  margin: 5px 0; /* Consistent spacing */
+}
+
+/* Delete Checkbox */
+.delete-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer; /* Indicates the checkbox is clickable */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  #product-list {
+    grid-template-columns: repeat(3, 1fr); /* Adjust for smaller screens */
+  }
+}
+
+@media (max-width: 900px) {
+  #product-list {
+    grid-template-columns: repeat(2, 1fr); /* Adjust for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .form-section {
+      padding: 15px;
+      margin: 20px; /* Adjust margins for smaller screens */
+  }
+
+  .form-actions {
+      text-align: center; /* Center buttons on smaller screens */
+  }
+}
+
 @media (max-width: 600px) {
-    header {
-        flex-direction: column;
-    }
-
-    .button, .btn-save {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    form {
-        width: 90%;
-        margin: 20px auto;
-    }
+  #product-list {
+    grid-template-columns: 1fr; /* Single column for very small screens */
+  }
 }
+
+/* Background Animation */
+.bg, .bg2, .bg3 {
+  animation: slide 3s ease-in-out infinite alternate;
+  background-image: linear-gradient(-60deg, #E169FF 50%, #09f 50%);
+  bottom: 0;
+  left: -50%;
+  opacity: .5;
+  position: fixed;
+  right: -50%;
+  top: 0;
+  z-index: -1;
+}
+
+.bg2 {
+  animation-direction: alternate-reverse;
+  animation-duration: 4s;
+}
+
+.bg3 {
+  animation-duration: 5s;
+}
+
+@keyframes slide {
+  0% {
+      transform: translateX(-25%);
+  }
+  100% {
+      transform: translateX(25%);
+  }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #E6E9EF; /* Lighter shade similar to body background for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A90E2; /* Using the header's background color for the thumb */
+  border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3071A9; /* A slightly darker shade of the header's background color for hover state */
+}
+
+
+
+

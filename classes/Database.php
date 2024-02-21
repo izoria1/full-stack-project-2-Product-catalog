@@ -1,31 +1,32 @@
 <?php
 class Database
 {
-    private static $instance = null;
-    private $connection;
+    private static $instance = null; // Holds the singleton instance of this class
+    private $connection; // Holds the PDO connection to the database
 
     private function __construct()
     {
-        // Initialize your database connection here
-        // Using PDO as an example
+        // Establishes the database connection using PDO.
         $this->connection = new PDO("mysql:host=localhost;dbname=product_db", "root", "");
+        // Set error mode to exception to handle errors more gracefully
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     private function __clone()
     {
-        // Prevent cloning of the instance
+        // Prevents the instance from being cloned to ensure a singleton instance
         throw new Exception("Cloning is not allowed.");
     }
 
     public function __wakeup()
     {
-        // Prevent unserialization of the instance
+        // Prevents the instance from being unserialized to ensure a singleton instance
         throw new Exception("Cannot unserialize singleton");
     }
 
     public static function getInstance()
     {
+        // Returns the singleton instance, creating it if it does not exist
         if (self::$instance === null) {
             self::$instance = new Database();
         }
@@ -34,6 +35,7 @@ class Database
 
     public function getConnection()
     {
+        // Returns the PDO database connection
         return $this->connection;
     }
 }
