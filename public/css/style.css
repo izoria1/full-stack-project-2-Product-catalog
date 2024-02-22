@@ -2,294 +2,408 @@
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 0 0 70px; /* Increase bottom padding to accommodate footer */
-  background-color: #f4f4f4;
+  padding: 0 0 70px; /* Adds extra padding at the bottom to ensure the footer doesn't overlap content */
+  background-color: #f4f4f4; /* Light grey background for a neutral look */
 }
 
 header {
-  background-color: #007bff;
-  color: #ffffff;
+  background-color: #007bff; /* Bright blue header for a vibrant look */
+  color: #ffffff; /* White text for contrast */
   padding: 20px;
-  height: 50px;
+  height: 50px; /* Fixed height for a uniform header */
   text-align: center;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex; /* Flex display to evenly space elements */
+  justify-content: space-between; /* Space items evenly */
+  align-items: center; /* Vertically center items */
 }
 
 header h1 {
-  margin: 0;
-  font-family: monospace;
+  margin: 0; /* Removes default margin */
+  font-family: monospace; /* Monospace font for a techy look */
 }
 
 footer {
-  background-color: #09f;
-  color: #ffffff;
+  background-color: #09f; /* Bright blue footer for consistency with the header */
+  color: #ffffff; /* White text for contrast */
   text-align: center;
   padding: 5px;
-  position: fixed;
+  position: fixed; /* Fixed at the bottom of the viewport */
   left: 0;
   bottom: 0;
-  width: 100%;
-  height: 50px; /* Define a fixed height for the footer */
+  width: 100%; /* Full width */
+  height: 50px; /* Fixed height for a uniform footer */
 }
 
 /* Buttons and Links Styling */
 .button, .btn-save, .cancel {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
+  background-color: #007bff; /* Primary button color */
+  color: #ffffff; /* White text for readability */
+  border: none; /* Removes default border */
+  padding: 10px 20px; /* Padding for a larger clickable area */
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 16px;
+  text-decoration: none; /* Removes underline from links */
+  display: inline-block; /* Allows setting margins */
+  margin: 4px 2px; /* Space between buttons */
+  cursor: pointer; /* Changes cursor to indicate clickable */
+  border-radius: 4px; /* Rounded corners for a modern look */
+  font-size: 16px; /* Larger font size for readability */
 }
 
 .button:hover, .btn-save:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker shade on hover for feedback */
 }
 
 .cancel {
-  background-color: #6c757d;
+  background-color: #6c757d; /* Grey color for secondary actions */
 }
 
 .cancel:hover {
-  background-color: #5a6268;
+  background-color: #5a6268; /* Darker grey on hover */
 }
 
 /* Error Message Styling */
 .error-message {
-  color: #f44336; /* Error color */
-  margin: 5px 0; /* Space around error message */
+  color: #f44336; /* Red color for errors */
+  margin: 5px 0; /* Adds space around the message */
 }
 
 /* Container for Add/Delete Buttons */
 .container {
-  width: 180px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  width: 180px; /* Fixed width to contain buttons */
+  display: flex; /* Flex display for alignment */
+  justify-content: space-around; /* Evenly space items */
+  align-items: center; /* Vertically center items */
 }
 
 #add-product-btn, #delete-product-btn {
-  border-radius: 50%;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
+  border-radius: 50%; /* Circular buttons */
+  padding: 10px; /* Padding for size */
+  border: none; /* Removes default border */
+  cursor: pointer; /* Indicates clickable */
 }
 
 #add-product-btn {
-  background-color: #007bff;
+  background-color: #007bff; /* Primary color for add button */
 }
 
 #add-product-btn:hover {
-  padding: 15px;
-  background-color: #005aba;
+  padding: 15px; /* Larger on hover for interactive feedback */
+  background-color: #005aba; /* Slightly darker on hover */
 }
 
 #delete-product-btn {
-  background-color: #dc3545;
+  background-color: #dc3545; /* Red color for delete action */
 }
 
 #delete-product-btn:hover {
-  padding: 15px;
-  background-color: #a20414;
+  padding: 15px; /* Larger on hover for interactive feedback */
+  background-color: #a20414; /* Slightly darker on hover */
 }
 
 .plus-icon, .delete-icon {
-  width: 30px;
+  width: 30px; /* Fixed size for icons */
   height: 30px;
 }
 
 /* Form Styling */
 form {
-  max-width: 600px;
-  margin: 20px auto;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 600px; /* Restricts form width for better layout */
+  margin: 20px auto; /* Centers form */
+  background: #ffffff; /* White background for clarity */
+  padding: 20px; /* Padding for spacing inside the form */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
 /* Add-Product Form Styling */
 .form-section {
-  max-width: 600px;
-  margin: 20px auto;
+  max-width: 600px; /* Matches form width for consistency */
+  margin: 20px auto; /* Centers section */
+  padding: 20px; /* Padding for spacing inside the section */
+  background: transparent ; /* Transparent for a light feel */
+  border-radius: 8px; /* Rounded corners for consistency with form */
+  box-shadow: 04f4f4; /* Light grey background for a neutral look */
+}
+
+header {
+  background-color: #007bff; /* Bright blue header for a vibrant look */
+  color: #ffffff; /* Text color set to white for contrast */
   padding: 20px;
-  background: transparent; /* Light background for the form */
+  height: 50px; /* Fixed header height */
+  text-align: center; /* Center-align the header content */
+  display: flex;
+  justify-content: space-between; /* Distribute space between header elements */
+  align-items: center; /* Vertically center elements within the header */
+}
+
+header h1 {
+  margin: 0; /* Removes default margin */
+  font-family: monospace; /* Monospace font for a techy look */
+}
+
+footer {
+  background-color: #09f; /* Vibrant footer color */
+  color: #ffffff; /* White text for readability */
+  text-align: center; /* Center-align footer content */
+  padding: 5px;
+  position: fixed; /* Fix footer to the bottom */
+  left: 0;
+  bottom: 0;
+  width: 100%; /* Full width */
+  height: 50px; /* Fixed footer height */
+}
+
+/* Buttons and Links Styling */
+.button, .btn-save, .cancel {
+  background-color: #007bff; /* Primary button color */
+  color: #ffffff; /* Button text color */
+  border: none; /* No border for a modern look */
+  padding: 10px 20px; /* Padding for button size */
+  text-align: center; /* Center text within the button */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Allows setting margins */
+  margin: 4px 2px; /* Space between buttons */
+  cursor: pointer; /* Cursor changes to pointer to indicate clickable */
+  border-radius: 4px; /* Rounded corners */
+  font-size: 16px; /* Text size */
+}
+
+.button:hover, .btn-save:hover {
+  background-color: #0056b3; /* Darker shade on hover for feedback */
+}
+
+.cancel {
+  background-color: #6c757d; /* Neutral color for cancel button */
+}
+
+.cancel:hover {
+  background-color: #5a6268; /* Slightly darker on hover for consistency */
+}
+
+/* Error Message Styling */
+.error-message {
+  color: #f44336; /* Bright red color for attention */
+  margin: 5px 0; /* Spacing around the message */
+}
+
+/* Container for Add/Delete Buttons */
+.container {
+  width: 180px; /* Fixed width for button alignment */
+  display: flex; /* Use flexbox for alignment */
+  justify-content: space-around; /* Even space around buttons */
+  align-items: center; /* Center buttons vertically */
+}
+
+#add-product-btn, #delete-product-btn {
+  border-radius: 50%; /* Circular shape */
+  padding: 10px; /* Size of the button */
+  border: none; /* No border */
+  cursor: pointer; /* Indicates it's clickable */
+}
+
+#add-product-btn {
+  background-color: #007bff; /* Add button color */
+}
+
+#add-product-btn:hover {
+  padding: 15px; /* Larger size on hover for feedback */
+  background-color: #005aba; /* Slightly darker color on hover */
+}
+
+#delete-product-btn {
+  background-color: #dc3545; /* Delete button color */
+}
+
+#delete-product-btn:hover {
+  padding: 15px; /* Larger size on hover for feedback */
+  background-color: #a20414; /* Slightly darker color on hover */
+}
+
+.plus-icon, .delete-icon {
+  width: 30px; /* Icon size */
+  height: 30px; /* Icon size */
+}
+
+/* Form Styling */
+form {
+  max-width: 600px; /* Maximum width for form */
+  margin: 20px auto; /* Center form on page */
+  background: #ffffff; /* White background for clarity */
+  padding: 20px; /* Inner spacing */
   border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* Add-Product Form Styling */
+.form-section {
+  max-width: 600px; /* Consistent with form styling */
+  margin: 20px auto; /* Center section */
+  padding: 20px; /* Consistent padding */
+  background: transparent; /* Maintains the page background */
+  border-radius: 8px; /* Consistent rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Consistent shadow for depth */
 }
 
 /* Form Group Styling */
 .form-group {
-  margin-bottom: 15px; /* Space between form fields */
+  margin-bottom: 15px; /* Space between form elements */
 }
 
 #product-form {
-  background: #6e7dff;
+  background: #6e7dff; /* Distinct background for form identification */
 }
 
 /* Label Styling */
 form label {
-  display: block;
-  margin-bottom: 5px; /* Space above the input field */
-  color: #f4f4f4; /* Dark color for contrast */
-  font-weight: bold; /* Make labels bold */
+  display: block; /* Block display for full-width labels */
+  margin-bottom: 5px; /* Space above inputs */
+  color: #f4f4f4; /* Light text for contrast */
+  font-weight: bold; /* Emphasize label text */
 }
 
 /* Input and Select Styling */
 form input[type="text"], form input[type="number"], form select {
-  background: #f4c5ff;
-  width: 100%; /* Full width */
-  padding: 10px; /* Padding for spacing */
-  margin-bottom: 20px; /* Space below each input/select */
+  background: #f4c5ff; /* Light background for inputs for contrast */
+  width: 100%; /* Full width to fill form */
+  padding: 10px; /* Comfortable padding */
+  margin-bottom: 20px; /* Space to separate form elements */
   border: 1px solid #ccc; /* Subtle border */
-  border-radius: 4px; /* Rounded corners */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  border-radius: 4px; /* Rounded corners for modern look */
+  box-sizing: border-box; /* Include padding and border in width/height */
 }
 
 .form-actions {
-  text-align: center; /* Center-align the buttons */
+  text-align: center; /* Center the form actions for balance */
 }
 
 /* Product List Styling */
 #product-list {
-  display: grid;
-  background-color: transparent;
-  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
-  gap: 20px;
-  padding: 30px;
-  margin: 20px 20px; /* Center the grid container */
-  max-width: calc(100% - 40px); /* Adjust max-width to consider the padding */
+  display: grid; /* Grid layout for product items */
+  background-color: transparent; /* Transparent background to blend with page */
+  grid-template-columns: repeat(4, 1fr); /* Four columns for product items */
+  gap: 20px; /* Space between grid items */
+  padding: 30px; /* Padding around the grid */
+  margin: 20px 20px; /* Margin to center the grid on the page */
+  max-width: calc(100% - 40px); /* Max width to account for padding */
 }
 
-
 .product-item {
-  background: linear-gradient(145deg, #6e7dff, #ff7eb3); /* Gradient background */
-  border-radius: 30px; /* Rounded corners */
-  padding: 23px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Box shadow for 3D effect */
-  color: #333; /* Text color */
-  position: relative; /* Allows for absolute positioning of children */
-  overflow: hidden; /* Ensures no overflow outside the border-radius */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  background: linear-gradient(145deg, #6e7dff, #ff7eb3); /* Gradient for visual interest */
+  border-radius: 30px; /* Soft rounded corners */
+  padding: 23px; /* Padding inside each item */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow for depth */
+  color: #333; /* Dark text for readability */
+  position: relative; /* Allows absolute positioning of child elements */
+  overflow: hidden; /* Contains content within the rounded corners */
+  display: flex; /* Flex layout for internal alignment */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  text-align: center; /* Center text */
 }
 
 /* SKU Label */
 .product-item p:first-child {
-  margin-top: -10px; /* Adjust top margin to position SKU closer to the top */
-  font-weight: bold; /* Make SKU bold */
+  margin-top: -10px; /* Adjusts position closer to the top edge */
+  font-weight: bold; /* Bold for emphasis */
 }
 
 /* Product Name */
 .product-item h3 {
-  font-size: 1.2rem;
-  color: #ffffff; /* White text for better contrast with background */
-  margin: 5px 0; /* Space above and below the name */
+  font-size: 1.2rem; /* Slightly larger text for product name */
+  color: #ffffff; /* White for readability against the background */
+  margin: 5px 0; /* Space around the name */
 }
 
 /* Price and Specs */
 .product-item p {
-  color: #ffffff; /* White text for better contrast with background */
+  color: #ffffff; /* White for readability */
   margin: 5px 0; /* Consistent spacing */
 }
 
 /* Delete Checkbox */
 .delete-checkbox {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer; /* Indicates the checkbox is clickable */
+  position: absolute; /* Position in the top-right corner */
+  top: 10px; /* Distance from the top */
+  right: 10px; /* Distance from the right */
+  cursor: pointer; /* Indicates interactiveness */
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1200px) {
   #product-list {
-    grid-template-columns: repeat(3, 1fr); /* Adjust for smaller screens */
+    grid-template-columns: repeat(3, 1fr); /* Three columns on smaller screens */
   }
 }
 
 @media (max-width: 900px) {
   #product-list {
-    grid-template-columns: repeat(2, 1fr); /* Adjust for smaller screens */
+    grid-template-columns: repeat(2, 1fr); /* Two columns on medium screens */
   }
 }
 
 @media (max-width: 768px) {
   .form-section {
-      padding: 15px;
-      margin: 20px; /* Adjust margins for smaller screens */
+    padding: 15px; /* Smaller padding on small screens */
+    margin: 20px; /* Adjusted margin for consistency */
   }
 
   .form-actions {
-      text-align: center; /* Center buttons on smaller screens */
+    text-align: center; /* Ensure actions are centered on mobile */
   }
 }
 
 @media (max-width: 600px) {
   #product-list {
-    grid-template-columns: 1fr; /* Single column for very small screens */
+    grid-template-columns: 1fr; /* Single column layout for small screens */
   }
 }
 
 /* Background Animation */
 .bg, .bg2, .bg3 {
-  animation: slide 3s ease-in-out infinite alternate;
-  background-image: linear-gradient(-60deg, #E169FF 50%, #09f 50%);
+  animation: slide 3s ease-in-out infinite alternate; /* Smooth background animation */
+  background-image: linear-gradient(-60deg, #E169FF 50%, #09f 50%); /* Gradient for dynamic look */
   bottom: 0;
-  left: -50%;
-  opacity: .5;
-  position: fixed;
-  right: -50%;
+  left: -50%; /* Position off-screen for animation */
+  opacity: .5; /* Semi-transparent for subtle effect */
+  position: fixed; /* Fixed position to cover the entire screen */
+  right: -50%; /* Position off-screen for animation */
   top: 0;
-  z-index: -1;
+  z-index: -1; /* Behind content */
 }
 
 .bg2 {
-  animation-direction: alternate-reverse;
-  animation-duration: 4s;
+  animation-direction: alternate-reverse; /* Reverse animation for variety */
+  animation-duration: 4s; /* Slightly different duration for overlap effect */
 }
 
 .bg3 {
-  animation-duration: 5s;
+  animation-duration: 5s; /* Longer duration for a layered effect */
 }
 
 @keyframes slide {
   0% {
-      transform: translateX(-25%);
+    transform: translateX(-25%); /* Start from the left */
   }
   100% {
-      transform: translateX(25%);
+    transform: translateX(25%); /* Move to the right */
   }
 }
 
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px; /* Narrow scrollbar for a cleaner look */
 }
 
 ::-webkit-scrollbar-track {
-  background: #E6E9EF; /* Lighter shade similar to body background for the track */
+  background: #E6E9EF; /* Light track color for subtlety */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4A90E2; /* Using the header's background color for the thumb */
-  border-radius: 4px; /* Rounded corners for the thumb */
+  background: #4A90E2; /* Match header color for consistency */
+  border-radius: 4px; /* Rounded thumb for a modern look */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3071A9; /* A slightly darker shade of the header's background color for hover state */
+  background: #3071A9; /* Darker shade on hover for feedback */
 }
-
-
-
-
