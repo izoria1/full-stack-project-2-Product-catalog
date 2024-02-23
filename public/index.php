@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Catalog</title>
+    <title>Product List</title>
     <!-- Link to external CSS for styling -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Import jQuery library for easier DOM manipulation -->
@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <h1>Product Catalog</h1>
+        <h1>Product List</h1>
         <div class="container">
             <!-- Button to navigate to the product addition page -->
             <a href="add-product.php">
