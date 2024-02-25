@@ -6,8 +6,14 @@ class Database
 
     private function __construct()
     {
-        // Establishes the database connection using PDO.
-        $this->connection = new PDO("mysql:host=localhost;dbname=product_db", "root", "");
+        // Production database credentials
+        $host = ''; // Usually something like 'localhost' or a specific server address
+        $dbname = '';
+        $username = '';
+        $password = '';
+
+        // Establishes the database connection using PDO with production credentials
+        $this->connection = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
         // Set error mode to exception to handle errors more gracefully
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
