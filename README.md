@@ -8,7 +8,8 @@ This document outlines the project structure, setup instructions, and usage.
 
 The project is organized into several key directories and files:
 
-- `actions/`: Contains PHP scripts for product operations (addition, deletion).
+- `actions/delete_product.php`: Backend script for deleting products.
+- `actions/product_action.php`: Backend script for adding products.
 - `classes/`: Includes PHP class definitions for products, database operations, and product factory pattern implementation.
 - `public/`: Holds the front-end components.
   - `css/`: CSS files for styling.
@@ -16,8 +17,6 @@ The project is organized into several key directories and files:
   - `js/`: JavaScript files for dynamic frontend behaviors.
   - `add-product.php`: The form for adding new products.
   - `index.php`: The main product listing page.
-- `actions/delete_product.php`: Backend script for deleting products.
-- `actions/product_action.php`: Backend script for adding products.
 
 ### Key Components
 
